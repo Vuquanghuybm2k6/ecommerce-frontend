@@ -1,0 +1,56 @@
+// file này chứa các địa chỉ api chứ nó không gọi api
+const BASE_URL = 'http://localhost:3000'
+
+const API = {
+  // ───────── Client ─────────
+  home: '/api',
+  products: '/api/products',
+  productDetail: (slug) => `/api/products/detail/${slug}`,
+  productsByCategory: (slug) => `/api/products/${slug}`,
+  search: '/api/search',
+  cart: '/api/cart',
+  cartAdd: (id) => `/api/cart/add/${id}`,
+  cartDelete: (id) => `/api/cart/delete/${id}`,
+  cartUpdate: (id, qty) => `/api/cart/update/${id}/${qty}`,
+  checkout: '/api/checkout',
+  checkoutOrder: '/api/checkout/order',
+  checkoutSuccess: (id) => `/api/checkout/success/${id}`,
+  userRegister: '/api/user/register',
+  userLogin: '/api/user/login',
+  userLogout: '/api/user/logout',
+  userRefreshToken: '/api/user/refresh-token',
+  userForgotPassword: '/api/user/password/forgot',
+  userOtp: '/api/user/password/otp',
+  userResetPassword: '/api/user/password/reset',
+  userInfo: '/api/user/info',
+  userEdit: '/api/user/edit',
+
+  // ───────── Admin ─────────
+  adminLogin: '/api/admin/auth/login',
+  adminRefreshToken: '/api/admin/auth/refresh-token',
+  adminLogout: '/api/admin/auth/logout',
+  adminDashboard: '/api/admin/dashboard',
+  adminProducts: '/api/admin/products',
+  adminProductCreate: '/api/admin/products/create',
+  adminProductEdit: (id) => `/api/admin/products/edit/${id}`,
+  adminProductDetail: (id) => `/api/admin/products/detail/${id}`,
+  adminProductChangeStatus: (status, id) => `/api/admin/products/change-status/${status}/${id}`,
+  adminProductChangeMulti: '/api/admin/products/change-multi',
+  adminProductDelete: (id) => `/api/admin/products/delete/${id}`,
+  adminCategories: '/api/admin/products-category',
+  adminCategoryCreate: '/api/admin/products-category/create',
+  adminCategoryEdit: (id) => `/api/admin/products-category/edit/${id}`,
+  adminRoles: '/api/admin/roles',
+  adminRoleCreate: '/api/admin/roles/create',
+  adminRoleEdit: (id) => `/api/admin/roles/edit/${id}`,
+  adminRolePermissions: '/api/admin/roles/permissions',
+  adminAccounts: '/api/admin/accounts',
+  adminAccountCreate: '/api/admin/accounts/create',
+  adminAccountEdit: (id) => `/api/admin/accounts/edit/${id}`,
+  adminMyAccount: '/api/admin/my-account',
+  adminMyAccountEdit: '/api/admin/my-account/edit',
+  adminSettings: '/api/admin/settings/general',
+}
+
+export { BASE_URL }
+export default API
