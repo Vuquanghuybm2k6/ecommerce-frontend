@@ -40,6 +40,8 @@ const API = {
   adminCategories: '/api/admin/products-category',
   adminCategoryCreate: '/api/admin/products-category/create',
   adminCategoryEdit: (id) => `/api/admin/products-category/edit/${id}`,
+  adminCategoryDelete: (id) => `/api/admin/products-category/delete/${id}`,
+  adminCategoryDetail: (id) => `/api/admin/products-category/detail/${id}`,
   adminRoles: '/api/admin/roles',
   adminRoleCreate: '/api/admin/roles/create',
   adminRoleEdit: (id) => `/api/admin/roles/edit/${id}`,
