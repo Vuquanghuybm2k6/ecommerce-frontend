@@ -12,7 +12,7 @@ function useAuth() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const { login: storeLogin, setUser, logout: storeLogout } = useAuthStore()
-  const updateCartId = useCartStore(state => state.updateCartId)
+  const { updateCartId, resetCart } = useCartStore()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -92,6 +92,7 @@ function useAuth() {
       // ignore logout errors
     }
     storeLogout()
+    resetCart()
     navigate('/user/login')
   }
 

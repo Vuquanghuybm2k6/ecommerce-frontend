@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Spin, Typography, Descriptions, Table, Tag, Button, Select, Space, Modal } from 'antd'
+import { Spin, Typography, Descriptions, Table, Tag, Button, Select, Space, Modal, Input } from 'antd'
+const { TextArea } = Input
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import useAdminOrderDetail from '../../../hooks/useAdminOrderDetail'
 import { formatCurrency, getDisplayPrice } from '../../../utils/price'
@@ -34,6 +36,8 @@ const VALID_TRANSITIONS = {
 function AdminOrderDetail() {
   const { id: orderId } = useParams()
   const { order, loading, error, changeStatus } = useAdminOrderDetail(orderId)
+  const [cancelModal, setCancelModal] = useState(false)
+  const [cancelReason, setCancelReason] = useState('')
 
   if (loading) {
     return <div className="admin-order-loading"><Spin size="large" /></div>
@@ -48,6 +52,11 @@ function AdminOrderDetail() {
   }
 
   const handleStatusChange = (newStatus) => {
+    if (newStatus === 'cancelled') {
+      setCancelReason('')
+      setCancelModal(true)
+      return
+    }
     Modal.confirm({
       title: 'Xác nhận đổi trạng thái',
       content: `Chuyển đơn hàng "${order.orderCode}" sang "${statusLabelMap[newStatus]}"?`,
@@ -167,6 +176,31 @@ function AdminOrderDetail() {
           )}
         />
       </div>
+
+      <Modal
+        title="Xác nhận hủy đơn hàng"
+        open={cancelModal}
+        onOk={() => {
+          changeStatus('cancelled', cancelReason)
+          setCancelModal(false)
+          setCancelReason('')
+        }}
+        onCancel={() => {
+          setCancelModal(false)
+          setCancelReason('')
+        }}
+        okText="Hủy đơn"
+        okButtonProps={{ danger: true }}
+      >
+        <p>Bạn có chắc muốn hủy đơn hàng "{order.orderCode}"?</p>
+        <TextArea
+          placeholder="Nhập lý do hủy (không bắt buộc)"
+          value={cancelReason}
+          onChange={e => setCancelReason(e.target.value)}
+          rows={3}
+          style={{ marginTop: 8 }}
+        />
+      </Modal>
     </div>
   )
 }

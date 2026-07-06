@@ -18,9 +18,9 @@ function useAdminOrderDetail(orderId) {
       .finally(() => setLoading(false))
   }, [orderId])
 
-  const changeStatus = async (status) => {
+  const changeStatus = async (status, reason) => {
     try {
-      await axiosAdminAuth.patch(API.adminOrderChangeStatus(orderId), { status })
+      await axiosAdminAuth.patch(API.adminOrderChangeStatus(orderId), { status, reason })
       message.success('Cập nhật trạng thái thành công')
       setOrder(prev => ({ ...prev, status }))
     } catch (err) {

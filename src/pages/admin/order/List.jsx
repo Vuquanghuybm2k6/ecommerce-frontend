@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Typography, Table, Tag, Space, Button, Input, Pagination, Modal, Select } from 'antd'
+const { TextArea } = Input
 import { SearchOutlined } from '@ant-design/icons'
 import useAdminOrders from '../../../hooks/useAdminOrders'
 import AdminFilterStatus from '../../../components/admin/AdminFilterStatus'
@@ -40,6 +41,8 @@ function AdminOrderList() {
   const sortKey = searchParams.get('sortKey') || ''
   const sortValue = searchParams.get('sortValue') || ''
   const [searchText, setSearchText] = useState(keyword)
+  const [cancelModal, setCancelModal] = useState({ open: false, orderId: null })
+  const [cancelReason, setCancelReason] = useState('')
 
   const { orders, filterStatus, pagination, loading, changeStatus, deleteOrder } = useAdminOrders({
     status, keyword, page, sortKey, sortValue
@@ -67,6 +70,11 @@ function AdminOrderList() {
   }
 
   const handleStatusChange = (id, newStatus) => {
+    if (newStatus === 'cancelled') {
+      setCancelReason('')
+      setCancelModal({ open: true, orderId: id })
+      return
+    }
     Modal.confirm({
       title: 'Xác nhận đổi trạng thái',
       content: `Chuyển đơn hàng sang "${statusLabelMap[newStatus]}"?`,
@@ -203,6 +211,31 @@ function AdminOrderList() {
           />
         )}
       </Space>
+
+      <Modal
+        title="Xác nhận hủy đơn hàng"
+        open={cancelModal.open}
+        onOk={() => {
+          changeStatus(cancelModal.orderId, 'cancelled', cancelReason)
+          setCancelModal({ open: false, orderId: null })
+          setCancelReason('')
+        }}
+        onCancel={() => {
+          setCancelModal({ open: false, orderId: null })
+          setCancelReason('')
+        }}
+        okText="Hủy đơn"
+        okButtonProps={{ danger: true }}
+      >
+        <p>Bạn có chắc muốn hủy đơn hàng này?</p>
+        <TextArea
+          placeholder="Nhập lý do hủy (không bắt buộc)"
+          value={cancelReason}
+          onChange={e => setCancelReason(e.target.value)}
+          rows={3}
+          style={{ marginTop: 8 }}
+        />
+      </Modal>
     </div>
   )
 }
