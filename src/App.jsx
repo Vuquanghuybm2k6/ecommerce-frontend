@@ -1,43 +1,92 @@
 import { Routes, Route } from 'react-router-dom'
 
+import ClientLayout from './components/layout/ClientLayout'
+import AdminLayout from './components/layout/AdminLayout'
+import NotFound from './components/layout/NotFound'
+
+import HomePage from './pages/client/HomePage'
+import ProductList from './pages/client/ProductList'
+import ProductDetail from './pages/client/ProductDetail'
+import CategoryProducts from './pages/client/CategoryProducts'
+import SearchPage from './pages/client/SearchPage'
+import CartPage from './pages/client/CartPage'
+import CheckoutPage from './pages/client/CheckoutPage'
+import OrderSuccess from './pages/client/OrderSuccess'
+import LoginPage from './pages/client/LoginPage'
+import RegisterPage from './pages/client/RegisterPage'
+import LogoutPage from './pages/client/LogoutPage'
+import ForgotPassword from './pages/client/ForgotPassword'
+import OtpPage from './pages/client/OtpPage'
+import ResetPassword from './pages/client/ResetPassword'
+import UserInfo from './pages/client/UserInfo'
+import EditProfile from './pages/client/EditProfile'
+
+import AdminLoginPage from './pages/admin/LoginPage'
+import Dashboard from './pages/admin/Dashboard'
+import AdminProductList from './pages/admin/product/List'
+import CreateProduct from './pages/admin/product/Create'
+import EditProduct from './pages/admin/product/Edit'
+import AdminProductDetail from './pages/admin/product/Detail'
+import AdminCategoryList from './pages/admin/category/List'
+import CreateCategory from './pages/admin/category/Create'
+import EditCategory from './pages/admin/category/Edit'
+import AdminRoleList from './pages/admin/role/List'
+import CreateRole from './pages/admin/role/Create'
+import EditRole from './pages/admin/role/Edit'
+import RolePermissions from './pages/admin/role/Permissions'
+import AdminAccountList from './pages/admin/account/List'
+import CreateAccount from './pages/admin/account/Create'
+import EditAccount from './pages/admin/account/Edit'
+import MyAccount from './pages/admin/MyAccount'
+import EditMyAccount from './pages/admin/EditMyAccount'
+import SettingsGeneral from './pages/admin/SettingsGeneral'
+
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<div>Home Page</div>} />
-      <Route path="/products" element={<div>Product List</div>} />
-      <Route path="/products/detail/:slug" element={<div>Product Detail</div>} />
-      <Route path="/products/:slugCategory" element={<div>Category Products</div>} />
-      <Route path="/search" element={<div>Search</div>} />
-      <Route path="/cart" element={<div>Cart</div>} />
-      <Route path="/checkout" element={<div>Checkout</div>} />
-      <Route path="/checkout/success/:orderId" element={<div>Order Success</div>} />
-      <Route path="/user/login" element={<div>Login</div>} />
-      <Route path="/user/register" element={<div>Register</div>} />
-      <Route path="/user/logout" element={<div>Logout</div>} />
-      <Route path="/user/password/forgot" element={<div>Forgot Password</div>} />
-      <Route path="/user/password/otp" element={<div>OTP</div>} />
-      <Route path="/user/password/reset" element={<div>Reset Password</div>} />
-      <Route path="/user/info" element={<div>User Info</div>} />
-      <Route path="/user/edit" element={<div>Edit Profile</div>} />
-      <Route path="/admin/login" element={<div>Admin Login</div>} />
-      <Route path="/admin" element={<div>Admin Dashboard</div>} />
-      <Route path="/admin/products" element={<div>Admin Products</div>} />
-      <Route path="/admin/products/create" element={<div>Create Product</div>} />
-      <Route path="/admin/products/edit/:id" element={<div>Edit Product</div>} />
-      <Route path="/admin/products/detail/:id" element={<div>Product Detail</div>} />
-      <Route path="/admin/products-category" element={<div>Admin Categories</div>} />
-      <Route path="/admin/products-category/create" element={<div>Create Category</div>} />
-      <Route path="/admin/products-category/edit/:id" element={<div>Edit Category</div>} />
-      <Route path="/admin/roles" element={<div>Admin Roles</div>} />
-      <Route path="/admin/roles/create" element={<div>Create Role</div>} />
-      <Route path="/admin/roles/edit/:id" element={<div>Edit Role</div>} />
-      <Route path="/admin/roles/permissions" element={<div>Role Permissions</div>} />
-      <Route path="/admin/accounts" element={<div>Admin Accounts</div>} />
-      <Route path="/admin/accounts/create" element={<div>Create Account</div>} />
-      <Route path="/admin/accounts/edit/:id" element={<div>Edit Account</div>} />
-      <Route path="/admin/my-account" element={<div>My Account</div>} />
-      <Route path="/admin/my-account/edit" element={<div>Edit My Account</div>} />
-      <Route path="/admin/settings/general" element={<div>Settings</div>} />
+      <Route element={<ClientLayout />}>
+        <Route index element={<HomePage />} />
+        <Route path="products" element={<ProductList />} />
+        <Route path="products/detail/:slug" element={<ProductDetail />} />
+        <Route path="products/:slugCategory" element={<CategoryProducts />} />
+        <Route path="search" element={<SearchPage />} />
+        <Route path="cart" element={<CartPage />} />
+        <Route path="checkout" element={<CheckoutPage />} />
+        <Route path="checkout/success/:orderId" element={<OrderSuccess />} />
+        <Route path="user/login" element={<LoginPage />} />
+        <Route path="user/register" element={<RegisterPage />} />
+        <Route path="user/logout" element={<LogoutPage />} />
+        <Route path="user/password/forgot" element={<ForgotPassword />} />
+        <Route path="user/password/otp" element={<OtpPage />} />
+        <Route path="user/password/reset" element={<ResetPassword />} />
+        <Route path="user/info" element={<UserInfo />} />
+        <Route path="user/edit" element={<EditProfile />} />
+      </Route>
+
+      <Route path="admin/login" element={<AdminLoginPage />} />
+
+      <Route path="admin" element={<AdminLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="products" element={<AdminProductList />} />
+        <Route path="products/create" element={<CreateProduct />} />
+        <Route path="products/edit/:id" element={<EditProduct />} />
+        <Route path="products/detail/:id" element={<AdminProductDetail />} />
+        <Route path="products-category" element={<AdminCategoryList />} />
+        <Route path="products-category/create" element={<CreateCategory />} />
+        <Route path="products-category/edit/:id" element={<EditCategory />} />
+        <Route path="roles" element={<AdminRoleList />} />
+        <Route path="roles/create" element={<CreateRole />} />
+        <Route path="roles/edit/:id" element={<EditRole />} />
+        <Route path="roles/permissions" element={<RolePermissions />} />
+        <Route path="accounts" element={<AdminAccountList />} />
+        <Route path="accounts/create" element={<CreateAccount />} />
+        <Route path="accounts/edit/:id" element={<EditAccount />} />
+        <Route path="my-account" element={<MyAccount />} />
+        <Route path="my-account/edit" element={<EditMyAccount />} />
+        <Route path="settings/general" element={<SettingsGeneral />} />
+      </Route>
+
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }
