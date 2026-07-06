@@ -1,4 +1,19 @@
+import { useEffect } from 'react'
+import { Spin } from 'antd'
+import useAuth from '../../hooks/useAuth'
+
 function LogoutPage() {
-  return <div>Logout</div>
+  const { logoutUser } = useAuth()
+
+  useEffect(() => {
+    logoutUser()
+  }, [logoutUser])
+
+  return (
+    <div className="auth-page">
+      <Spin size="large" tip="Đang đăng xuất..." />
+    </div>
+  )
 }
+
 export default LogoutPage
