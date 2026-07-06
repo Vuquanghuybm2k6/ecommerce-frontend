@@ -1,0 +1,30 @@
+.product-filter {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.filter-search {
+  flex: 1;
+  min-width: 200px;
+  max-width: 400px;
+}
+
+.filter-sort {
+  width: 180px;
+}
+
+@media (max-width: 576px) {
+  .product-filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-search,
+  .filter-sort {
+    max-width: 100%;
+    width: 100%;
+  }
+}
