@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
 import { Card, Tag } from 'antd'
+import { highlightText } from '../../utils/highlight.jsx'
 import './ProductCard.css'
 
 const { Meta } = Card
 
-function ProductCard({ product }) {
+function ProductCard({ product, highlightKeyword }) {
   const { title, price, discountPercentage, priceNew, thumbnail, slug } = product
   const hasDiscount = discountPercentage > 0
 
@@ -25,7 +26,7 @@ function ProductCard({ product }) {
         }
       >
         <Meta
-          title={<span className="product-card-title">{title}</span>}
+          title={<span className="product-card-title">{highlightText(title, highlightKeyword)}</span>}
           description={
             <div className="product-card-prices">
               {hasDiscount ? (
