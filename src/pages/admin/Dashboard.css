@@ -1,0 +1,26 @@
+.dash-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.dashboard-page {
+  padding-bottom: 24px;
+}
+
+.dash-card {
+  border-radius: 12px;
+  border: none;
+}
+
+.dash-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.dash-stats {
+  text-align: center;
+}
