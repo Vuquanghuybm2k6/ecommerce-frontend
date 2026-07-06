@@ -1,0 +1,44 @@
+.order-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.order-success-page {
+  padding-bottom: 24px;
+}
+
+.order-detail-card {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.order-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.order-product-thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.order-total-price {
+  color: #e74c3c;
+  font-size: 16px;
+}
+
+.order-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}

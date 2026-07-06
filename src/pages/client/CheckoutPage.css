@@ -1,0 +1,127 @@
+.checkout-loading,
+.checkout-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.checkout-page {
+  padding-bottom: 24px;
+}
+
+.checkout-layout {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.checkout-form-section {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.checkout-summary-section {
+  width: 380px;
+  flex-shrink: 0;
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 24px;
+  position: sticky;
+  top: 88px;
+}
+
+.checkout-products {
+  margin-top: 16px;
+}
+
+.checkout-product-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.checkout-product-item:last-child {
+  border-bottom: none;
+}
+
+.checkout-product-image {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.checkout-product-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.checkout-product-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checkout-product-name {
+  font-size: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.checkout-product-meta {
+  font-size: 13px;
+  color: #888;
+}
+
+.checkout-product-total {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e74c3c;
+  white-space: nowrap;
+}
+
+.checkout-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.checkout-total-label {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.checkout-total-price {
+  font-size: 22px;
+  font-weight: 700;
+  color: #e74c3c;
+}
+
+@media (max-width: 768px) {
+  .checkout-layout {
+    flex-direction: column;
+  }
+
+  .checkout-summary-section {
+    width: 100%;
+    position: static;
+  }
+}
