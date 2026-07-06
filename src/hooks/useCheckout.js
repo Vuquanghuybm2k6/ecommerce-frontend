@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import axiosClient from '../api/axiosClient'
+import axiosClientAuth from '../api/axiosClientAuth'
 import API from '../api/endpoints'
 import useCartStore from '../store/cartStore'
 
@@ -19,7 +19,7 @@ function useCheckout() {
     setError(null)
 
     try {
-      const res = await axiosClient.get(API.checkout)
+      const res = await axiosClientAuth.get(API.checkout)
       const detail = res.data.data.cartDetail
       setCartDetail(detail)
       updateCartId(detail._id)

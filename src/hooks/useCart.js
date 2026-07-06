@@ -45,7 +45,7 @@ function useCart() {
 
   const deleteItem = async (productId) => {
     try {
-      const res = await axiosClient.get(API.cartDelete(productId))
+      const res = await axiosClient.delete(API.cartDelete(productId))
       syncCart(res.data.data.cart)
     } catch (err) {
       setError(err)
@@ -54,7 +54,7 @@ function useCart() {
 
   const updateQuantity = async (productId, quantity) => {
     try {
-      const res = await axiosClient.get(API.cartUpdate(productId, quantity))
+      const res = await axiosClient.put(API.cartUpdate(productId), { quantity })
       syncCart(res.data.data.cart)
     } catch (err) {
       setError(err)

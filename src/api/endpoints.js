@@ -11,7 +11,7 @@ const API = {
   cart: '/api/cart',
   cartAdd: (id) => `/api/cart/add/${id}`,
   cartDelete: (id) => `/api/cart/delete/${id}`,
-  cartUpdate: (id, qty) => `/api/cart/update/${id}/${qty}`,
+  cartUpdate: (id) => `/api/cart/update/${id}`,
   checkout: '/api/checkout',
   checkoutOrder: '/api/checkout/order',
   checkoutSuccess: (id) => `/api/checkout/success/${id}`,
@@ -24,6 +24,8 @@ const API = {
   userResetPassword: '/api/user/password/reset',
   userInfo: '/api/user/info',
   userEdit: '/api/user/edit',
+  userOrders: '/api/orders',
+  orderDetail: (id) => `/api/orders/${id}`,
 
   // ───────── Admin ─────────
   adminLogin: '/api/admin/auth/login',

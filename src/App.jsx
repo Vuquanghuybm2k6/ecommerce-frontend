@@ -20,6 +20,8 @@ import OtpPage from './pages/client/OtpPage'
 import ResetPassword from './pages/client/ResetPassword'
 import UserInfo from './pages/client/UserInfo'
 import EditProfile from './pages/client/EditProfile'
+import OrderList from './pages/client/OrderList'
+import OrderDetail from './pages/client/OrderDetail'
 
 import AdminLoginPage from './pages/admin/LoginPage'
 import Dashboard from './pages/admin/Dashboard'
@@ -61,6 +63,8 @@ function App() {
         <Route path="user/password/reset" element={<ResetPassword />} />
         <Route path="user/info" element={<UserInfo />} />
         <Route path="user/edit" element={<EditProfile />} />
+        <Route path="user/orders" element={<OrderList />} />
+        <Route path="user/orders/:orderId" element={<OrderDetail />} />
       </Route>
 
       <Route path="admin/login" element={<AdminLoginPage />} />

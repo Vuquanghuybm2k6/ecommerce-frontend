@@ -5,16 +5,27 @@ import { formatCurrency, getDisplayPrice } from '../../utils/price'
 import './CartItem.css'
 
 function CartItem({ item, onDelete, onUpdateQuantity }) {
-  const { productInfo, quantity, totalPrice, product_id } = item
-  const { title, thumbnail, slug, priceNew, price, discountPercentage } = productInfo || {}
+  const { productInfo, quantity, totalPrice, product_id } = item || {}
+  const productData = productInfo || {}
+  const title = productData.title || 'Sản phẩm'
+  const thumbnail = productData.thumbnail || ''
+  const slug = productData.slug || ''
+  const price = Number(productData.price) || 0
+  const priceNew = Number(productData.priceNew) || 0
+  const discountPercentage = Number(productData.discountPercentage) || 0
   const hasDiscount = discountPercentage > 0
-  const displayPrice = getDisplayPrice(productInfo || {})
+  const displayPrice = getDisplayPrice({
+    ...productData,
+    price,
+    priceNew,
+    discountPercentage,
+  })
 
   return (
     <div className="cart-item">
       <div className="cart-item-image">
         <Link to={`/products/detail/${slug}`}>
-          <img alt={title} src={thumbnail} />
+          <img alt={title} src={thumbnail || null} />
         </Link>
       </div>
 

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axiosClient from '../api/axiosClient'
+import axiosClientAuth from '../api/axiosClientAuth'
 import API from '../api/endpoints'
 import { removeCartId } from '../utils/cartId'
 import useCartStore from '../store/cartStore'
@@ -14,7 +14,7 @@ function usePlaceOrder() {
     setError(null)
 
     try {
-      const res = await axiosClient.post(API.checkoutOrder, orderData)
+      const res = await axiosClientAuth.post(API.checkoutOrder, orderData)
       const { orderId, orderCode } = res.data.data
 
       setCart(null)

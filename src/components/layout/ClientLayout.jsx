@@ -28,6 +28,7 @@ function ClientLayout() {
   const userMenuItems = [
     { key: 'info', label: <Link to="/user/info">Thông tin tài khoản</Link> },
     { key: 'edit', label: <Link to="/user/edit">Chỉnh sửa hồ sơ</Link> },
+    { key: 'orders', label: <Link to="/user/orders">Đơn hàng của tôi</Link> },
     { type: 'divider' },
     { key: 'logout', label: <Link to="/user/logout">Đăng xuất</Link> },
   ]

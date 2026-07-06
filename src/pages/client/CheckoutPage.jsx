@@ -16,7 +16,7 @@ const { TextArea } = Input
 function CheckoutPage() {
   const navigate = useNavigate()
   const [form] = Form.useForm()
-  const { cartDetail, loading } = useCheckout()
+  const { cartDetail, loading, error } = useCheckout()
   const { placeOrder, placing, error: placeError } = usePlaceOrder()
   const { isAuthenticated } = useAuthStore()
   const [submitted, setSubmitted] = useState(false)
@@ -49,6 +49,21 @@ function CheckoutPage() {
 
   if (loading) {
     return <div className="checkout-loading"><Spin size="large" /></div>
+  }
+
+  if (error && !loading) {
+    return (
+      <div className="checkout-empty">
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description={error.response?.data?.message || 'Không thể tải thông tin giỏ hàng'}
+        >
+          <Link to="/cart">
+            <Button type="primary">Quay lại giỏ hàng</Button>
+          </Link>
+        </Empty>
+      </div>
+    )
   }
 
   if (isEmpty) {
