@@ -41,6 +41,8 @@ import CreateAccount from './pages/admin/account/Create'
 import EditAccount from './pages/admin/account/Edit'
 import MyAccount from './pages/admin/MyAccount'
 import EditMyAccount from './pages/admin/EditMyAccount'
+import AdminOrderList from './pages/admin/order/List'
+import AdminOrderDetail from './pages/admin/order/Detail'
 import SettingsGeneral from './pages/admin/SettingsGeneral'
 
 function App() {
@@ -85,6 +87,8 @@ function App() {
         <Route path="accounts" element={<AdminAccountList />} />
         <Route path="accounts/create" element={<CreateAccount />} />
         <Route path="accounts/edit/:id" element={<EditAccount />} />
+        <Route path="orders" element={<AdminOrderList />} />
+        <Route path="orders/detail/:id" element={<AdminOrderDetail />} />
         <Route path="my-account" element={<MyAccount />} />
         <Route path="my-account/edit" element={<EditMyAccount />} />
         <Route path="settings/general" element={<SettingsGeneral />} />

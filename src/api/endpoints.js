@@ -57,6 +57,10 @@ const API = {
   adminAccountDetail: (id) => `/api/admin/accounts/detail/${id}`,
   adminMyAccount: '/api/admin/my-account',
   adminMyAccountEdit: '/api/admin/my-account/edit',
+  adminOrders: '/api/admin/orders',
+  adminOrderDetail: (id) => `/api/admin/orders/detail/${id}`,
+  adminOrderChangeStatus: (status, id) => `/api/admin/orders/change-status/${status}/${id}`,
+  adminOrderDelete: (id) => `/api/admin/orders/delete/${id}`,
   adminSettings: '/api/admin/settings/general',
 }
 

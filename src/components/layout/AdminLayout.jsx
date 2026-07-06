@@ -5,6 +5,7 @@ import {
   DashboardOutlined,
   ShoppingOutlined,
   AppstoreOutlined,
+  OrderedListOutlined,
   TeamOutlined,
   UserOutlined,
   SafetyOutlined,
@@ -35,6 +36,14 @@ const menuItems = [
     children: [
       { key: '/admin/products-category', label: <Link to="/admin/products-category">Danh sách</Link> },
       { key: '/admin/products-category/create', label: <Link to="/admin/products-category/create">Thêm mới</Link> },
+    ],
+  },
+  {
+    key: 'orders',
+    icon: <OrderedListOutlined />,
+    label: 'Đơn hàng',
+    children: [
+      { key: '/admin/orders', label: <Link to="/admin/orders">Danh sách</Link> },
     ],
   },
   {
@@ -94,7 +103,7 @@ function AdminLayout() {
           theme="dark"
           mode="inline"
           selectedKeys={[selectedKey]}
-          defaultOpenKeys={['products', 'categories', 'roles', 'accounts']}
+          defaultOpenKeys={['products', 'categories', 'orders', 'roles', 'accounts']}
           items={menuItems}
         />
       </Sider>
