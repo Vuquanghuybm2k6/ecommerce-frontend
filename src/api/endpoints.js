@@ -45,6 +45,7 @@ const API = {
   adminRoles: '/api/admin/roles',
   adminRoleCreate: '/api/admin/roles/create',
   adminRoleEdit: (id) => `/api/admin/roles/edit/${id}`,
+  adminRoleDelete: (id) => `/api/admin/roles/delete/${id}`,
   adminRolePermissions: '/api/admin/roles/permissions',
   adminAccounts: '/api/admin/accounts',
   adminAccountCreate: '/api/admin/accounts/create',
