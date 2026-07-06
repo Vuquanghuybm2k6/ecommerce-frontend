@@ -7,6 +7,7 @@ import useCheckout from '../../hooks/useCheckout'
 import usePlaceOrder from '../../hooks/usePlaceOrder'
 import useAuthStore from '../../store/authStore'
 import { getCartId } from '../../utils/cartId'
+import { formatCurrency, getDisplayPrice } from '../../utils/price'
 import './CheckoutPage.css'
 
 const { Title, Text } = Typography
@@ -150,11 +151,11 @@ function CheckoutPage() {
                   <div className="checkout-product-info">
                     <Text className="checkout-product-name">{info.title}</Text>
                     <Text className="checkout-product-meta">
-                      {info.priceNew?.toLocaleString('vi-VN')}₫ x {item.quantity}
+                      {formatCurrency(getDisplayPrice(info))} x {item.quantity}
                     </Text>
                   </div>
                   <div className="checkout-product-total">
-                    {item.totalPrice?.toLocaleString('vi-VN')}₫
+                    {formatCurrency(item.totalPrice)}
                   </div>
                 </div>
               )
@@ -166,7 +167,7 @@ function CheckoutPage() {
           <div className="checkout-total">
             <Text className="checkout-total-label">Tổng cộng</Text>
             <Text className="checkout-total-price">
-              {cartDetail.totalPrice?.toLocaleString('vi-VN')}₫
+              {formatCurrency(cartDetail.totalPrice)}
             </Text>
           </div>
         </div>

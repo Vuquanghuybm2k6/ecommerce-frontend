@@ -3,6 +3,7 @@ import { Spin, Empty, Typography, Button, Divider } from 'antd'
 import useCart from '../../hooks/useCart'
 import { getCartId } from '../../utils/cartId'
 import CartItem from '../../components/client/CartItem'
+import { formatCurrency } from '../../utils/price'
 import './CartPage.css'
 
 const { Title, Text } = Typography
@@ -74,7 +75,7 @@ function CartPage() {
         </div>
         <div className="cart-summary-right">
           <Text className="cart-total-price">
-            {cart.totalPrice?.toLocaleString('vi-VN')}₫
+            {formatCurrency(cart.totalPrice)}
           </Text>
           <Link to="/checkout">
             <Button type="primary" size="large">

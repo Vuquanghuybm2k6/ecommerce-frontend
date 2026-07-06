@@ -1,12 +1,14 @@
 import { InputNumber, Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
+import { formatCurrency, getDisplayPrice } from '../../utils/price'
 import './CartItem.css'
 
 function CartItem({ item, onDelete, onUpdateQuantity }) {
   const { productInfo, quantity, totalPrice, product_id } = item
   const { title, thumbnail, slug, priceNew, price, discountPercentage } = productInfo || {}
   const hasDiscount = discountPercentage > 0
+  const displayPrice = getDisplayPrice(productInfo || {})
 
   return (
     <div className="cart-item">
@@ -23,11 +25,11 @@ function CartItem({ item, onDelete, onUpdateQuantity }) {
         <div className="cart-item-price">
           {hasDiscount ? (
             <>
-              <span className="current-price">{priceNew?.toLocaleString('vi-VN')}₫</span>
-              <span className="old-price">{price?.toLocaleString('vi-VN')}₫</span>
+              <span className="current-price">{formatCurrency(displayPrice)}</span>
+              <span className="old-price">{formatCurrency(price)}</span>
             </>
           ) : (
-            <span className="current-price">{price?.toLocaleString('vi-VN')}₫</span>
+            <span className="current-price">{formatCurrency(price)}</span>
           )}
         </div>
       </div>
@@ -41,7 +43,7 @@ function CartItem({ item, onDelete, onUpdateQuantity }) {
       </div>
 
       <div className="cart-item-total">
-        {totalPrice?.toLocaleString('vi-VN')}₫
+        {formatCurrency(totalPrice)}
       </div>
 
       <Button

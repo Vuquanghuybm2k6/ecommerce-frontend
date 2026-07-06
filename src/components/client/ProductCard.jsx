@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Card, Tag } from 'antd'
 import { highlightText } from '../../utils/highlight.jsx'
+import { formatCurrency, getDisplayPrice } from '../../utils/price'
 import './ProductCard.css'
 
 const { Meta } = Card
@@ -8,6 +9,7 @@ const { Meta } = Card
 function ProductCard({ product, highlightKeyword }) {
   const { title, price, discountPercentage, priceNew, thumbnail, slug } = product
   const hasDiscount = discountPercentage > 0
+  const displayPrice = getDisplayPrice(product)
 
   return (
     <Link to={`/products/detail/${slug}`} className="product-card-link">
@@ -32,15 +34,15 @@ function ProductCard({ product, highlightKeyword }) {
               {hasDiscount ? (
                 <>
                   <span className="product-price-new">
-                    {priceNew?.toLocaleString('vi-VN')}₫
+                    {formatCurrency(displayPrice)}
                   </span>
                   <span className="product-price-old">
-                    {price?.toLocaleString('vi-VN')}₫
+                    {formatCurrency(price)}
                   </span>
                 </>
               ) : (
                 <span className="product-price">
-                  {price?.toLocaleString('vi-VN')}₫
+                  {formatCurrency(price)}
                 </span>
               )}
             </div>

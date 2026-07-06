@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { Spin, Result, Typography, Descriptions, Table, Tag, Button } from 'antd'
 import useOrderSuccess from '../../hooks/useOrderSuccess'
+import { formatCurrency, getDisplayPrice } from '../../utils/price'
 import './OrderSuccess.css'
 
 const { Title, Text } = Typography
@@ -59,7 +60,7 @@ function OrderSuccess() {
       title: 'Đơn giá',
       dataIndex: 'priceNew',
       key: 'price',
-      render: (val) => `${val?.toLocaleString('vi-VN')}₫`,
+      render: (val, record) => formatCurrency(val ?? getDisplayPrice(record?.productInfo || record)),
     },
     {
       title: 'Số lượng',
@@ -70,7 +71,7 @@ function OrderSuccess() {
       title: 'Thành tiền',
       dataIndex: 'totalPrice',
       key: 'total',
-      render: (val) => `${val?.toLocaleString('vi-VN')}₫`,
+      render: (val) => formatCurrency(val),
     },
   ]
 
@@ -119,7 +120,7 @@ function OrderSuccess() {
                 </Table.Summary.Cell>
                 <Table.Summary.Cell index={1}>
                   <Text strong className="order-total-price">
-                    {order.totalPrice?.toLocaleString('vi-VN')}₫
+                    {formatCurrency(order.totalPrice)}
                   </Text>
                 </Table.Summary.Cell>
               </Table.Summary.Row>

@@ -6,6 +6,7 @@ import axiosClient from '../../api/axiosClient'
 import API from '../../api/endpoints'
 import useProductDetail from '../../hooks/useProductDetail'
 import useCartStore from '../../store/cartStore'
+import { formatCurrency, getDisplayPrice } from '../../utils/price'
 import './ProductDetail.css'
 
 const { Title, Text } = Typography
@@ -61,6 +62,7 @@ function ProductDetail() {
 
   const hasDiscount = discountPercentage > 0
   const inStock = stock > 0
+  const displayPrice = getDisplayPrice(product)
 
   return (
     <div className="product-detail-page">
@@ -92,12 +94,12 @@ function ProductDetail() {
           <div className="detail-prices">
             {hasDiscount ? (
               <>
-                <span className="detail-price-new">{priceNew?.toLocaleString('vi-VN')}₫</span>
-                <span className="detail-price-old">{price?.toLocaleString('vi-VN')}₫</span>
+                <span className="detail-price-new">{formatCurrency(displayPrice)}</span>
+                <span className="detail-price-old">{formatCurrency(price)}</span>
                 <Tag color="red">-{discountPercentage}%</Tag>
               </>
             ) : (
-              <span className="detail-price">{price?.toLocaleString('vi-VN')}₫</span>
+              <span className="detail-price">{formatCurrency(price)}</span>
             )}
           </div>
 
