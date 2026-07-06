@@ -24,6 +24,14 @@ const statusLabelMap = {
   cancelled: 'Đã hủy',
 }
 
+const VALID_TRANSITIONS = {
+  pending:    ["confirmed", "cancelled"],
+  confirmed:  ["shipped", "cancelled"],
+  shipped:    ["delivered"],
+  delivered:  [],
+  cancelled:  [],
+}
+
 function AdminOrderList() {
   const [searchParams, setSearchParams] = useSearchParams()
   const status = searchParams.get('status') || ''
@@ -111,21 +119,24 @@ function AdminOrderList() {
       dataIndex: 'status',
       key: 'status',
       width: 160,
-      render: (val, record) => (
-        <Select
-          value={val}
-          size="small"
-          style={{ width: 130 }}
-          onChange={(newStatus) => handleStatusChange(record._id, newStatus)}
-          options={[
-            { value: 'pending', label: <Tag color="orange">Chờ xác nhận</Tag> },
-            { value: 'confirmed', label: <Tag color="blue">Đã xác nhận</Tag> },
-            { value: 'shipped', label: <Tag color="cyan">Đang giao</Tag> },
-            { value: 'delivered', label: <Tag color="green">Đã giao</Tag> },
-            { value: 'cancelled', label: <Tag color="red">Đã hủy</Tag> },
-          ]}
-        />
-      ),
+      render: (val, record) => {
+        const nextStatuses = VALID_TRANSITIONS[val] || []
+        const options = [
+          { value: val, label: <Tag color={statusColorMap[val]}>{statusLabelMap[val]}</Tag> },
+          ...nextStatuses
+            .filter(s => s !== val)
+            .map(s => ({ value: s, label: <Tag color={statusColorMap[s]}>{statusLabelMap[s]}</Tag> })),
+        ]
+        return (
+          <Select
+            value={val}
+            size="small"
+            style={{ width: 150 }}
+            onChange={(newStatus) => handleStatusChange(record._id, newStatus)}
+            options={options}
+          />
+        )
+      },
     },
     {
       title: 'Hành động',

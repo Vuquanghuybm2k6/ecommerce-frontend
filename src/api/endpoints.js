@@ -60,7 +60,7 @@ const API = {
   adminMyAccountEdit: '/api/admin/my-account/edit',
   adminOrders: '/api/admin/orders',
   adminOrderDetail: (id) => `/api/admin/orders/detail/${id}`,
-  adminOrderChangeStatus: (status, id) => `/api/admin/orders/change-status/${status}/${id}`,
+  adminOrderChangeStatus: (id) => `/api/admin/orders/change-status/${id}`,
   adminOrderDelete: (id) => `/api/admin/orders/delete/${id}`,
   adminSettings: '/api/admin/settings/general',
 }

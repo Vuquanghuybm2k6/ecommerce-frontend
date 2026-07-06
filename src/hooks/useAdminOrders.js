@@ -33,11 +33,12 @@ function useAdminOrders(params = {}) {
 
   const changeStatus = async (id, status) => {
     try {
-      await axiosAdminAuth.patch(API.adminOrderChangeStatus(status, id))
+      await axiosAdminAuth.patch(API.adminOrderChangeStatus(id), { status })
       message.success('Cập nhật trạng thái thành công')
       fetchOrders()
-    } catch {
-      message.error('Cập nhật trạng thái thất bại')
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Cập nhật trạng thái thất bại'
+      message.error(msg)
     }
   }
 

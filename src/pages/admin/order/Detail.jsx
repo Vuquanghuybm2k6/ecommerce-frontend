@@ -23,6 +23,14 @@ const statusLabelMap = {
   cancelled: 'Đã hủy',
 }
 
+const VALID_TRANSITIONS = {
+  pending:    ["confirmed", "cancelled"],
+  confirmed:  ["shipped", "cancelled"],
+  shipped:    ["delivered"],
+  delivered:  [],
+  cancelled:  [],
+}
+
 function AdminOrderDetail() {
   const { id: orderId } = useParams()
   const { order, loading, error, changeStatus } = useAdminOrderDetail(orderId)
@@ -94,13 +102,14 @@ function AdminOrderDetail() {
             value={order.status}
             style={{ width: 160 }}
             onChange={handleStatusChange}
-            options={[
-              { value: 'pending', label: 'Chờ xác nhận' },
-              { value: 'confirmed', label: 'Đã xác nhận' },
-              { value: 'shipped', label: 'Đang giao hàng' },
-              { value: 'delivered', label: 'Đã giao hàng' },
-              { value: 'cancelled', label: 'Đã hủy' },
-            ]}
+            options={
+              [
+                { value: order.status, label: statusLabelMap[order.status] },
+                ...VALID_TRANSITIONS[order.status]
+                  .filter(s => s !== order.status)
+                  .map(s => ({ value: s, label: statusLabelMap[s] })),
+              ]
+            }
           />
         </Space>
       </div>
