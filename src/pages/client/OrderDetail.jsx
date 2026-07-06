@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Spin, Result, Typography, Descriptions, Table, Tag, Button, Steps } from 'antd'
+import { Spin, Result, Typography, Descriptions, Table, Tag, Button, Steps, Modal } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import useOrderDetail from '../../hooks/useOrderDetail'
 import { formatCurrency, getDisplayPrice } from '../../utils/price'
@@ -33,7 +34,8 @@ const stepMap = {
 
 function OrderDetail() {
   const { orderId } = useParams()
-  const { order, loading, error } = useOrderDetail(orderId)
+  const { order, loading, error, cancelOrder } = useOrderDetail(orderId)
+  const [cancelling, setCancelling] = useState(false)
 
   if (loading) {
     return <div className="order-loading"><Spin size="large" /></div>
@@ -153,6 +155,28 @@ function OrderDetail() {
       </div>
 
       <div className="order-actions">
+        {order.status === 'pending' && (
+          <Button
+            danger
+            loading={cancelling}
+            onClick={() => {
+              Modal.confirm({
+                title: 'Xác nhận hủy đơn hàng',
+                content: `Bạn có chắc muốn hủy đơn hàng "${order.orderCode}"?`,
+                okText: 'Hủy đơn',
+                cancelText: 'Giữ lại',
+                okButtonProps: { danger: true },
+                onOk: async () => {
+                  setCancelling(true)
+                  await cancelOrder()
+                  setCancelling(false)
+                },
+              })
+            }}
+          >
+            Hủy đơn hàng
+          </Button>
+        )}
         <Link to="/">
           <Button>Tiếp tục mua sắm</Button>
         </Link>

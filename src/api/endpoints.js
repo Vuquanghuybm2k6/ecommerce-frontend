@@ -26,6 +26,7 @@ const API = {
   userEdit: '/api/user/edit',
   userOrders: '/api/orders',
   orderDetail: (id) => `/api/orders/${id}`,
+  orderCancel: (id) => `/api/orders/cancel/${id}`,
 
   // ───────── Admin ─────────
   adminLogin: '/api/admin/auth/login',

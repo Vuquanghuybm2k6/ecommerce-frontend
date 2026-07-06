@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Spin, Typography, Table, Tag, Button, Select, Empty } from 'antd'
-import { EyeOutlined } from '@ant-design/icons'
+import { Spin, Typography, Table, Tag, Button, Select, Empty, Modal, message, Space } from 'antd'
+import { EyeOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import useOrderList from '../../hooks/useOrderList'
+import axiosClientAuth from '../api/axiosClientAuth'
+import API from '../api/endpoints'
 import { formatCurrency } from '../../utils/price'
 import './OrderList.css'
 
@@ -25,8 +27,27 @@ const statusLabelMap = {
 }
 
 function OrderList() {
-  const { orders, loading, error } = useOrderList()
+  const { orders, loading, error, refetch } = useOrderList()
   const [filterStatus, setFilterStatus] = useState('all')
+
+  const handleCancel = (orderId, orderCode) => {
+    Modal.confirm({
+      title: 'Xác nhận hủy đơn hàng',
+      content: `Bạn có chắc muốn hủy đơn hàng "${orderCode}"?`,
+      okText: 'Hủy đơn',
+      cancelText: 'Giữ lại',
+      okButtonProps: { danger: true },
+      onOk: async () => {
+        try {
+          await axiosClientAuth.patch(API.orderCancel(orderId))
+          message.success('Hủy đơn hàng thành công')
+          refetch()
+        } catch (err) {
+          message.error(err.response?.data?.message || 'Hủy đơn hàng thất bại')
+        }
+      },
+    })
+  }
 
   const filteredOrders = filterStatus === 'all'
     ? orders
@@ -66,11 +87,23 @@ function OrderList() {
       title: '',
       key: 'action',
       render: (_, record) => (
-        <Link to={`/user/orders/${record._id}`}>
-          <Button type="primary" ghost icon={<EyeOutlined />} size="small">
-            Chi tiết
-          </Button>
-        </Link>
+        <Space>
+          <Link to={`/user/orders/${record._id}`}>
+            <Button type="primary" ghost icon={<EyeOutlined />} size="small">
+              Chi tiết
+            </Button>
+          </Link>
+          {record.status === 'pending' && (
+            <Button
+              danger
+              icon={<CloseCircleOutlined />}
+              size="small"
+              onClick={() => handleCancel(record._id, record.orderCode)}
+            >
+              Hủy
+            </Button>
+          )}
+        </Space>
       ),
     },
   ]
