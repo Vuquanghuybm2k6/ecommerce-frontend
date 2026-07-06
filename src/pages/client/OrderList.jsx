@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Spin, Typography, Table, Tag, Button, Select, Empty, Modal, message, Space } from 'antd'
+import { Spin, Typography, Table, Tag, Button, Select, Empty, Modal, message, Space, Pagination } from 'antd'
 import { EyeOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import useOrderList from '../../hooks/useOrderList'
 import axiosClientAuth from '../../api/axiosClientAuth'
@@ -27,8 +27,13 @@ const statusLabelMap = {
 }
 
 function OrderList() {
-  const { orders, loading, error, refetch } = useOrderList()
+  const { orders, loading, error, refetch, page, total, changePage } = useOrderList()
   const [filterStatus, setFilterStatus] = useState('all')
+
+  const handleFilterChange = (value) => {
+    setFilterStatus(value)
+    changePage(1)
+  }
 
   const handleCancel = (orderId, orderCode) => {
     Modal.confirm({
@@ -126,7 +131,7 @@ function OrderList() {
         <Title level={3}>Đơn hàng của tôi</Title>
         <Select
           value={filterStatus}
-          onChange={setFilterStatus}
+          onChange={handleFilterChange}
           style={{ width: 180 }}
           options={[
             { value: 'all', label: 'Tất cả' },
@@ -144,9 +149,20 @@ function OrderList() {
           dataSource={filteredOrders}
           columns={columns}
           rowKey={(record) => record._id}
-          pagination={{ pageSize: 10 }}
+          pagination={false}
           locale={{ emptyText: 'Chưa có đơn hàng nào' }}
         />
+        {total > 0 && (
+          <div className="order-list-pagination">
+            <Pagination
+              current={page}
+              total={total}
+              pageSize={10}
+              onChange={changePage}
+              showSizeChanger={false}
+            />
+          </div>
+        )}
       </div>
     </div>
   )
