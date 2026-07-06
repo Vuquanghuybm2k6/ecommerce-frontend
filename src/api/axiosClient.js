@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { BASE_URL } from './endpoints'
+import { getCartId } from '../utils/cartId'
 
 const axiosClient = axios.create({
   baseURL: BASE_URL,
@@ -7,7 +8,7 @@ const axiosClient = axios.create({
 })
 
 axiosClient.interceptors.request.use(config => {
-  const cartId = localStorage.getItem('cartId')
+  const cartId = getCartId()
   if (cartId) config.headers['x-cart-id'] = cartId
   return config
 })

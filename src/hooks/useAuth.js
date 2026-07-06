@@ -1,16 +1,27 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import axiosClient from '../api/axiosClient'
 import axiosClientAuth from '../api/axiosClientAuth'
 import API from '../api/endpoints'
 import useAuthStore from '../store/authStore'
+import useCartStore from '../store/cartStore'
 import { getRefreshToken } from '../utils/token'
+import { setCartId } from '../utils/cartId'
 
 function useAuth() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const { login: storeLogin, setUser, logout: storeLogout } = useAuthStore()
+  const updateCartId = useCartStore(state => state.updateCartId)
   const navigate = useNavigate()
+  const location = useLocation()
+
+  const saveCartId = (cartId) => {
+    if (cartId) {
+      setCartId(cartId)
+      updateCartId(cartId)
+    }
+  }
 
   const fetchUser = async () => {
     try {
@@ -27,10 +38,13 @@ function useAuth() {
 
     try {
       const res = await axiosClient.post(API.userLogin, { email, password })
-      const { user, accessToken, refreshToken } = res.data.data
+      const { user, accessToken, refreshToken, cartId } = res.data.data
       storeLogin({ accessToken, refreshToken }, user)
+      saveCartId(cartId)
       await fetchUser()
-      navigate('/')
+      const params = new URLSearchParams(location.search)
+      const redirect = params.get('redirect') || '/'
+      navigate(redirect)
     } catch (err) {
       const msg = err.response?.data?.message || 'Đăng nhập thất bại'
       setError(msg)
@@ -55,8 +69,9 @@ function useAuth() {
       const res = await axiosClient.post(API.userRegister, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      const { user, accessToken, refreshToken } = res.data.data
+      const { user, accessToken, refreshToken, cartId } = res.data.data
       storeLogin({ accessToken, refreshToken }, user)
+      saveCartId(cartId)
       await fetchUser()
       navigate('/')
     } catch (err) {

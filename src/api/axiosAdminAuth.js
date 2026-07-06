@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { BASE_URL } from './endpoints'
-import { getAdminAccessToken, setAdminTokens, removeAdminTokens } from '../utils/token'
+import { getAdminAccessToken, getAdminRefreshToken, setAdminTokens, removeAdminTokens } from '../utils/token'
 
 const axiosAdminAuth = axios.create({
   baseURL: BASE_URL,
@@ -19,7 +19,7 @@ axiosAdminAuth.interceptors.response.use(
     const original = error.config
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true
-      const refreshToken = localStorage.getItem('adminRefreshToken')
+      const refreshToken = getAdminRefreshToken()
       if (!refreshToken) {
         removeAdminTokens()
         window.location.href = '/admin/login'

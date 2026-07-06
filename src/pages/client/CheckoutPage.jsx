@@ -5,6 +5,7 @@ import {
 } from 'antd'
 import useCheckout from '../../hooks/useCheckout'
 import usePlaceOrder from '../../hooks/usePlaceOrder'
+import useAuthStore from '../../store/authStore'
 import { getCartId } from '../../utils/cartId'
 import './CheckoutPage.css'
 
@@ -16,6 +17,7 @@ function CheckoutPage() {
   const [form] = Form.useForm()
   const { cartDetail, loading } = useCheckout()
   const { placeOrder, placing, error: placeError } = usePlaceOrder()
+  const { isAuthenticated } = useAuthStore()
   const [submitted, setSubmitted] = useState(false)
   const hasCartId = !!getCartId()
 
@@ -30,6 +32,11 @@ function CheckoutPage() {
   }, [placeError, submitted])
 
   const handleSubmit = async (values) => {
+    if (!isAuthenticated) {
+      const redirect = encodeURIComponent('/checkout')
+      navigate(`/user/login?redirect=${redirect}`)
+      return
+    }
     setSubmitted(true)
     try {
       const { orderId } = await placeOrder(values)

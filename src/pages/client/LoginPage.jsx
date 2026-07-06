@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Form, Input, Button, Typography, Divider, message } from 'antd'
 import { GoogleOutlined } from '@ant-design/icons'
 import useAuth from '../../hooks/useAuth'
@@ -14,6 +14,7 @@ const { Title, Text } = Typography
 function LoginPage() {
   const [form] = Form.useForm()
   const navigate = useNavigate()
+  const location = useLocation()
   const { loginUser, loading, error } = useAuth()
   const { login: storeLogin, setUser } = useAuthStore()
 
@@ -35,18 +36,26 @@ function LoginPage() {
       axiosClientAuth.get('/api/user/info')
         .then(res => {
           setUser(res.data.data.user)
-          navigate('/')
         })
-        .catch(() => {
-          navigate('/')
-        })
+        .catch(() => {})
 
+      const redirect = sessionStorage.getItem('loginRedirect') || '/'
+      sessionStorage.removeItem('loginRedirect')
       window.history.replaceState({}, '', '/user/login')
+      navigate(redirect)
     }
   }, [navigate, storeLogin, setUser])
 
   const handleSubmit = async (values) => {
     await loginUser(values.email, values.password)
+  }
+
+  const handleGoogleLogin = () => {
+    const params = new URLSearchParams(location.search)
+    const redirect = params.get('redirect')
+    if (redirect) {
+      sessionStorage.setItem('loginRedirect', redirect)
+    }
   }
 
   return (
@@ -96,7 +105,7 @@ function LoginPage() {
 
         <Divider>Hoặc</Divider>
 
-        <a href={`${BASE_URL}/auth/google`} className="google-btn">
+        <a href={`${BASE_URL}/auth/google`} className="google-btn" onClick={handleGoogleLogin}>
           <Button icon={<GoogleOutlined />} size="large" block>
             Đăng nhập bằng Google
           </Button>
