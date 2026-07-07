@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Spin, Typography, Button, InputNumber, Breadcrumb, Tag, Divider, message } from 'antd'
+import { Spin, Typography, Button, InputNumber, Breadcrumb, Tag, Divider, notification } from 'antd'
 import { ShoppingCartOutlined } from '@ant-design/icons'
 import axiosClient from '../../api/axiosClient'
 import API from '../../api/endpoints'
@@ -28,9 +28,9 @@ function ProductDetail() {
       updateCartId(updatedCart._id)
       const totalQty = updatedCart.products.reduce((sum, item) => sum + item.quantity, 0)
       setTotalQuantity(totalQty)
-      message.success('Đã thêm vào giỏ hàng')
+      notification.success({ message: 'Thông báo', description: 'Đã thêm vào giỏ hàng', placement: 'topRight', duration: 3 })
     } catch {
-      message.error('Thêm giỏ hàng thất bại')
+      notification.error({ message: 'Thông báo', description: 'Thêm giỏ hàng thất bại', placement: 'topRight', duration: 3 })
     } finally {
       setAdding(false)
     }

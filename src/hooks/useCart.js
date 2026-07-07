@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { notification } from 'antd'
 import axiosClient from '../api/axiosClient'
 import API from '../api/endpoints'
 import useCartStore from '../store/cartStore'
@@ -47,7 +48,9 @@ function useCart() {
     try {
       const res = await axiosClient.delete(API.cartDelete(productId))
       syncCart(res.data.data.cart)
+      notification.success({ message: 'Thông báo', description: 'Đã xóa sản phẩm khỏi giỏ hàng', placement: 'topRight', duration: 3 })
     } catch (err) {
+      notification.error({ message: 'Thông báo', description: 'Xóa sản phẩm thất bại', placement: 'topRight', duration: 3 })
       setError(err)
     }
   }
