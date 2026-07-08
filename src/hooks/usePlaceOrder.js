@@ -15,11 +15,16 @@ function usePlaceOrder() {
 
     try {
       const res = await axiosClientAuth.post(API.checkoutOrder, orderData)
-      const { orderId, orderCode } = res.data.data
+      const { orderId, orderCode, paymentUrl } = res.data.data
 
       setCart(null)
       setTotalQuantity(0)
       removeCartId()
+
+      if (paymentUrl) {
+        window.location.href = paymentUrl
+        return { orderId, orderCode, paymentUrl }
+      }
 
       return { orderId, orderCode }
     } catch (err) {

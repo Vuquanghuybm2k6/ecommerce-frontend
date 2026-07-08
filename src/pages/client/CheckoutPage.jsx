@@ -40,8 +40,9 @@ function CheckoutPage() {
     }
     setSubmitted(true)
     try {
-      const { orderId } = await placeOrder(values)
-      navigate(`/checkout/success/${orderId}`)
+      const result = await placeOrder(values)
+      if (result?.paymentUrl) return
+      navigate(`/checkout/success/${result.orderId}`)
     } catch {
       setSubmitted(false)
     }
@@ -131,6 +132,7 @@ function CheckoutPage() {
             <Form.Item name="paymentMethod" label="Phương thức thanh toán">
               <Select size="large" defaultValue="COD">
                 <Select.Option value="COD">Thanh toán khi nhận hàng (COD)</Select.Option>
+                <Select.Option value="vnpay">VNPay (Thanh toán online)</Select.Option>
               </Select>
             </Form.Item>
 
