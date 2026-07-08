@@ -10,6 +10,8 @@ const { Title, Text } = Typography
 
 const statusColorMap = {
   pending: 'orange',
+  pending_vnpay: 'gold',
+  payment_failed: 'volcano',
   confirmed: 'blue',
   shipped: 'cyan',
   delivered: 'green',
@@ -18,6 +20,8 @@ const statusColorMap = {
 
 const statusLabelMap = {
   pending: 'Chờ xác nhận',
+  pending_vnpay: 'Chờ thanh toán VNPay',
+  payment_failed: 'Thanh toán thất bại',
   confirmed: 'Đã xác nhận',
   shipped: 'Đang giao hàng',
   delivered: 'Đã giao hàng',
@@ -26,6 +30,8 @@ const statusLabelMap = {
 
 const stepMap = {
   pending: 0,
+  pending_vnpay: 0,
+  payment_failed: 0,
   confirmed: 1,
   shipped: 2,
   delivered: 3,
