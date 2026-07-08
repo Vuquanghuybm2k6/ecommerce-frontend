@@ -11,6 +11,7 @@ import CategoryProducts from './pages/client/CategoryProducts'
 import SearchPage from './pages/client/SearchPage'
 import CartPage from './pages/client/CartPage'
 import CheckoutPage from './pages/client/CheckoutPage'
+import VnpayReturn from './pages/client/VnpayReturn'
 import OrderSuccess from './pages/client/OrderSuccess'
 import LoginPage from './pages/client/LoginPage'
 import RegisterPage from './pages/client/RegisterPage'
@@ -56,6 +57,7 @@ function App() {
         <Route path="search" element={<SearchPage />} />
         <Route path="cart" element={<CartPage />} />
         <Route path="checkout" element={<CheckoutPage />} />
+        <Route path="checkout/vnpay-success" element={<VnpayReturn />} />
         <Route path="checkout/success/:orderId" element={<OrderSuccess />} />
         <Route path="user/login" element={<LoginPage />} />
         <Route path="user/register" element={<RegisterPage />} />
