@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { Layout, Input, Badge, Dropdown, Avatar, Button, Space, Typography } from 'antd'
 import {
@@ -7,6 +7,8 @@ import {
 } from '@ant-design/icons'
 import useAuthStore from '../../store/authStore'
 import useCartStore from '../../store/cartStore'
+import axiosClient from '../../api/axiosClient'
+import API from '../../api/endpoints'
 import './ClientLayout.css'
 
 const { Header, Footer, Content } = Layout
@@ -15,7 +17,19 @@ const { Text } = Typography
 function ClientLayout() {
   const navigate = useNavigate()
   const { user, isAuthenticated } = useAuthStore()
-  const { totalQuantity } = useCartStore()
+  const { cartId, cart, totalQuantity, setCart: setCartStore, updateCartId, setTotalQuantity } = useCartStore()
+
+  useEffect(() => {
+    if (cartId && !cart) {
+      axiosClient.get(API.cart).then(res => {
+        const cartData = res.data.data.cart
+        setCartStore(cartData)
+        updateCartId(cartData._id)
+        const qty = cartData.products.reduce((sum, item) => sum + item.quantity, 0)
+        setTotalQuantity(qty)
+      }).catch(() => {})
+    }
+  }, [])
   const [keyword, setKeyword] = useState('')
 
   const handleSearch = (value) => {

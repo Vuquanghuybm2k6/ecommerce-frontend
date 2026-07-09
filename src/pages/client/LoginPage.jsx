@@ -5,7 +5,8 @@ import { GoogleOutlined } from '@ant-design/icons'
 import useAuth from '../../hooks/useAuth'
 import useAuthStore from '../../store/authStore'
 import { setTokens } from '../../utils/token'
-import { setCartId, getCartId } from '../../utils/cartId'
+import { getCartId } from '../../utils/cartId'
+import useCartStore from '../../store/cartStore'
 import axiosClientAuth from '../../api/axiosClientAuth'
 import { BASE_URL } from '../../api/endpoints'
 import './LoginPage.css'
@@ -18,6 +19,7 @@ function LoginPage() {
   const location = useLocation()
   const { loginUser, loading, error } = useAuth()
   const { login: storeLogin, setUser } = useAuthStore()
+  const { updateCartId } = useCartStore()
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -35,7 +37,7 @@ function LoginPage() {
       storeLogin({ accessToken, refreshToken }, {})
 
       const cartId = params.get('cartId')
-      if (cartId) setCartId(cartId)
+      if (cartId) updateCartId(cartId)
 
       axiosClientAuth.get('/api/user/info')
         .then(res => {
