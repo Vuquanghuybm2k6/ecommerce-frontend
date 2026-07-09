@@ -8,6 +8,7 @@ import {
 import useAuthStore from '../../store/authStore'
 import useCartStore from '../../store/cartStore'
 import axiosClient from '../../api/axiosClient'
+import axiosClientAuth from '../../api/axiosClientAuth'
 import API from '../../api/endpoints'
 import './ClientLayout.css'
 
@@ -16,11 +17,19 @@ const { Text } = Typography
 
 function ClientLayout() {
   const navigate = useNavigate()
-  const { user, isAuthenticated } = useAuthStore()
-  const { cartId, cart, totalQuantity, setCart: setCartStore, updateCartId, setTotalQuantity } = useCartStore()
+  const { user, isAuthenticated, logout: storeLogout, setUser } = useAuthStore()
+  const { cartId, totalQuantity, setCart: setCartStore, updateCartId, setTotalQuantity } = useCartStore()
 
   useEffect(() => {
-    if (cartId && !cart) {
+    if (isAuthenticated && !user) {
+      axiosClientAuth.get(API.userInfo).then(res => {
+        setUser(res.data.data.user)
+      }).catch(() => {
+        storeLogout()
+      })
+    }
+
+    if (cartId) {
       axiosClient.get(API.cart).then(res => {
         const cartData = res.data.data.cart
         setCartStore(cartData)
@@ -29,7 +38,7 @@ function ClientLayout() {
         setTotalQuantity(qty)
       }).catch(() => {})
     }
-  }, [])
+  }, [cartId, isAuthenticated])
   const [keyword, setKeyword] = useState('')
 
   const handleSearch = (value) => {
