@@ -87,7 +87,7 @@ function AdminLoginPage() {
 
         <Divider>Hoặc</Divider>
 
-        <a href={`${BASE_URL}/admin/auth/google`} className="google-btn">
+        <a href={`${BASE_URL}/api/admin/auth/google`} className="google-btn">
           <Button icon={<GoogleOutlined />} size="large" block>
             Đăng nhập bằng Google
           </Button>

@@ -5,6 +5,7 @@ import { GoogleOutlined } from '@ant-design/icons'
 import useAuth from '../../hooks/useAuth'
 import useAuthStore from '../../store/authStore'
 import { setTokens } from '../../utils/token'
+import { setCartId, getCartId } from '../../utils/cartId'
 import axiosClientAuth from '../../api/axiosClientAuth'
 import { BASE_URL } from '../../api/endpoints'
 import './LoginPage.css'
@@ -32,6 +33,9 @@ function LoginPage() {
     if (accessToken && refreshToken) {
       setTokens({ accessToken, refreshToken })
       storeLogin({ accessToken, refreshToken }, {})
+
+      const cartId = params.get('cartId')
+      if (cartId) setCartId(cartId)
 
       axiosClientAuth.get('/api/user/info')
         .then(res => {
@@ -105,7 +109,7 @@ function LoginPage() {
 
         <Divider>Hoặc</Divider>
 
-        <a href={`${BASE_URL}/auth/google`} className="google-btn" onClick={handleGoogleLogin}>
+        <a href={`${BASE_URL}/api/auth/google${getCartId() ? '?cartId=' + getCartId() : ''}`} className="google-btn" onClick={handleGoogleLogin}>
           <Button icon={<GoogleOutlined />} size="large" block>
             Đăng nhập bằng Google
           </Button>
