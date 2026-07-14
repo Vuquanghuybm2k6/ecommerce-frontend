@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Spin, Typography, List, Tag, Button, Empty, Pagination, Space } from 'antd'
-import { BellOutlined, CheckOutlined } from '@ant-design/icons'
+import { BellOutlined, CheckOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import useNotifications from '../../hooks/useNotifications'
 import './Notifications.css'
 
@@ -8,10 +8,12 @@ const { Title, Text, Paragraph } = Typography
 
 const typeLabelMap = {
   review_deleted: 'Đánh giá bị xóa',
+  order_status_changed: 'Đơn hàng',
 }
 
 const typeColorMap = {
   review_deleted: 'red',
+  order_status_changed: 'blue',
 }
 
 function Notifications() {
@@ -48,7 +50,7 @@ function Notifications() {
             <List.Item.Meta
               avatar={
                 <div className={`notification-icon notification-icon-${item.type}`}>
-                  <BellOutlined />
+                  {item.type === 'order_status_changed' ? <ShoppingCartOutlined /> : <BellOutlined />}
                 </div>
               }
               title={

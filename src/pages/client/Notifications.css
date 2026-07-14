@@ -51,6 +51,11 @@
   color: #e74c3c;
 }
 
+.notification-icon-order_status_changed {
+  background: #e6f7ff;
+  color: #1890ff;
+}
+
 .notification-dot {
   display: inline-block;
   width: 8px;
