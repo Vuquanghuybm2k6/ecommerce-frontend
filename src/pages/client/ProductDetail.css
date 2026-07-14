@@ -83,6 +83,10 @@
   margin-bottom: 16px;
 }
 
+.detail-rating {
+  margin-bottom: 12px;
+}
+
 .detail-actions {
   display: flex;
   align-items: center;
@@ -107,6 +111,10 @@
 
 .detail-description img {
   max-width: 100%;
+}
+
+.detail-reviews {
+  margin-top: 40px;
 }
 
 @media (max-width: 768px) {

@@ -23,6 +23,8 @@ import UserInfo from './pages/client/UserInfo'
 import EditProfile from './pages/client/EditProfile'
 import OrderList from './pages/client/OrderList'
 import OrderDetail from './pages/client/OrderDetail'
+import MyReviews from './pages/client/MyReviews'
+import Notifications from './pages/client/Notifications'
 
 import AdminLoginPage from './pages/admin/LoginPage'
 import Dashboard from './pages/admin/Dashboard'
@@ -45,6 +47,7 @@ import EditMyAccount from './pages/admin/EditMyAccount'
 import AdminOrderList from './pages/admin/order/List'
 import AdminOrderDetail from './pages/admin/order/Detail'
 import SettingsGeneral from './pages/admin/SettingsGeneral'
+import AdminReviewList from './pages/admin/review/List'
 
 function App() {
   return (
@@ -69,6 +72,8 @@ function App() {
         <Route path="user/edit" element={<EditProfile />} />
         <Route path="user/orders" element={<OrderList />} />
         <Route path="user/orders/:orderId" element={<OrderDetail />} />
+        <Route path="user/reviews" element={<MyReviews />} />
+        <Route path="user/notifications" element={<Notifications />} />
       </Route>
 
       <Route path="admin/login" element={<AdminLoginPage />} />
@@ -94,6 +99,7 @@ function App() {
         <Route path="my-account" element={<MyAccount />} />
         <Route path="my-account/edit" element={<EditMyAccount />} />
         <Route path="settings/general" element={<SettingsGeneral />} />
+        <Route path="reviews" element={<AdminReviewList />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

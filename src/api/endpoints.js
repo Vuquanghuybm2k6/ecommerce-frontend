@@ -28,6 +28,16 @@ const API = {
   orderDetail: (id) => `/api/orders/${id}`,
   orderCancel: (id) => `/api/orders/cancel/${id}`,
 
+  // ───────── Reviews ─────────
+  reviewsByProduct: (productId) => `/api/reviews/product/${productId}`,
+  reviewsCreate: '/api/reviews',
+  reviewsUploadImages: '/api/reviews/upload-images',
+  reviewsUser: '/api/reviews/user',
+  reviewsUserReview: '/api/reviews/user-review',
+  reviewsUpdate: (id) => `/api/reviews/${id}`,
+  reviewsDelete: (id) => `/api/reviews/${id}`,
+  reviewsHelpful: (id) => `/api/reviews/${id}/helpful`,
+
   // ───────── Admin ─────────
   adminLogin: '/api/admin/auth/login',
   adminRefreshToken: '/api/admin/auth/refresh-token',
@@ -63,6 +73,15 @@ const API = {
   adminOrderChangeStatus: (id) => `/api/admin/orders/change-status/${id}`,
   adminOrderDelete: (id) => `/api/admin/orders/delete/${id}`,
   adminSettings: '/api/admin/settings/general',
+  adminReviews: '/api/admin/reviews',
+  adminReviewDetail: (id) => `/api/admin/reviews/${id}`,
+  adminReviewDelete: (id) => `/api/admin/reviews/${id}`,
+
+  // ───────── Notifications ─────────
+  notifications: '/api/notifications',
+  notificationsCount: '/api/notifications/count',
+  notificationRead: (id) => `/api/notifications/${id}/read`,
+  notificationsReadAll: '/api/notifications/read-all',
 }
 
 export { BASE_URL }

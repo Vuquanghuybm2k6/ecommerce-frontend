@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { Layout, Input, Badge, Dropdown, Avatar, Button, Space, Typography } from 'antd'
 import {
   ShoppingCartOutlined,
   UserOutlined,
+  BellOutlined,
 } from '@ant-design/icons'
 import useAuthStore from '../../store/authStore'
 import useCartStore from '../../store/cartStore'
@@ -17,8 +18,17 @@ const { Text } = Typography
 
 function ClientLayout() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { user, isAuthenticated, logout: storeLogout, setUser } = useAuthStore()
   const { cartId, totalQuantity, setCart: setCartStore, updateCartId, setTotalQuantity } = useCartStore()
+  const [unreadNotifCount, setUnreadNotifCount] = useState(0)
+
+  const fetchUnreadCount = () => {
+    if (!isAuthenticated) return
+    axiosClientAuth.get(API.notificationsCount).then(res => {
+      setUnreadNotifCount(res.data.data.unreadCount || 0)
+    }).catch(() => {})
+  }
 
   useEffect(() => {
     if (isAuthenticated && !user) {
@@ -38,7 +48,22 @@ function ClientLayout() {
         setTotalQuantity(qty)
       }).catch(() => {})
     }
-  }, [cartId, isAuthenticated])
+
+    fetchUnreadCount()
+  }, [cartId, isAuthenticated, location.pathname])
+
+  useEffect(() => {
+    const handleNotifRead = () => fetchUnreadCount()
+    window.addEventListener('notifications-read', handleNotifRead)
+    return () => window.removeEventListener('notifications-read', handleNotifRead)
+  }, [isAuthenticated])
+
+  useEffect(() => {
+    if (!isAuthenticated) return
+    fetchUnreadCount()
+    const interval = setInterval(fetchUnreadCount, 30000)
+    return () => clearInterval(interval)
+  }, [isAuthenticated])
   const [keyword, setKeyword] = useState('')
 
   const handleSearch = (value) => {
@@ -52,6 +77,8 @@ function ClientLayout() {
     { key: 'info', label: <Link to="/user/info">Thông tin tài khoản</Link> },
     { key: 'edit', label: <Link to="/user/edit">Chỉnh sửa hồ sơ</Link> },
     { key: 'orders', label: <Link to="/user/orders">Đơn hàng của tôi</Link> },
+    { key: 'reviews', label: <Link to="/user/reviews">Đánh giá của tôi</Link> },
+    { key: 'notifications', label: <Link to="/user/notifications">Thông báo {unreadNotifCount > 0 ? `(${unreadNotifCount})` : ''}</Link> },
     { type: 'divider' },
     { key: 'logout', label: <Link to="/user/logout">Đăng xuất</Link> },
   ]
@@ -78,6 +105,13 @@ function ClientLayout() {
           />
 
           <Space size="middle">
+            {isAuthenticated && (
+              <Link to="/user/notifications">
+                <Badge count={unreadNotifCount} showZero={false} size="small">
+                  <BellOutlined style={{ fontSize: 20, color: '#fff' }} />
+                </Badge>
+              </Link>
+            )}
             <Link to="/cart">
               <Badge count={totalQuantity} showZero={false}>
                 <ShoppingCartOutlined style={{ fontSize: 22, color: '#fff' }} />

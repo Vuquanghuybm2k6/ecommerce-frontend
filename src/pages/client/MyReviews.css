@@ -1,0 +1,28 @@
+.my-reviews-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.my-reviews-loading {
+  text-align: center;
+  padding: 60px 0;
+}
+
+.review-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.review-product-thumb {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.my-reviews-pagination {
+  text-align: center;
+  margin-top: 16px;
+}

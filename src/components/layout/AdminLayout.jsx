@@ -11,6 +11,7 @@ import {
   SafetyOutlined,
   SettingOutlined,
   LogoutOutlined,
+  StarOutlined,
 } from '@ant-design/icons'
 import useAdminAuthStore from '../../store/adminAuthStore'
 import './AdminLayout.css'
@@ -44,6 +45,14 @@ const menuItems = [
     label: 'Đơn hàng',
     children: [
       { key: '/admin/orders', label: <Link to="/admin/orders">Danh sách</Link> },
+    ],
+  },
+  {
+    key: 'reviews',
+    icon: <StarOutlined />,
+    label: 'Đánh giá',
+    children: [
+      { key: '/admin/reviews', label: <Link to="/admin/reviews">Danh sách</Link> },
     ],
   },
   {
@@ -103,7 +112,7 @@ function AdminLayout() {
           theme="dark"
           mode="inline"
           selectedKeys={[selectedKey]}
-          defaultOpenKeys={['products', 'categories', 'orders', 'roles', 'accounts']}
+          defaultOpenKeys={['products', 'categories', 'orders', 'reviews', 'roles', 'accounts']}
           items={menuItems}
         />
       </Sider>

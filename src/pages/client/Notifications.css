@@ -1,0 +1,65 @@
+.notifications-loading {
+  display: flex;
+  justify-content: center;
+  padding: 80px 0;
+}
+
+.notifications-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.notification-item {
+  padding: 16px !important;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-radius: 8px;
+}
+
+.notification-item:hover {
+  background: #f5f5f5;
+}
+
+.notification-unread {
+  background: #e6f4ff;
+}
+
+.notification-unread:hover {
+  background: #bae0ff;
+}
+
+.notification-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.notification-icon-review_deleted {
+  background: #fff1f0;
+  color: #e74c3c;
+}
+
+.notification-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1890ff;
+}
+
+.notifications-pagination {
+  text-align: center;
+  margin-top: 24px;
+}

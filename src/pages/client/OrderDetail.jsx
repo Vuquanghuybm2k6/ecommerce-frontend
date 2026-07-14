@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Spin, Result, Typography, Descriptions, Table, Tag, Button, Steps, Modal } from 'antd'
-import { ArrowLeftOutlined } from '@ant-design/icons'
+import { Spin, Result, Typography, Descriptions, Table, Tag, Button, Steps, Modal, message } from 'antd'
+import { ArrowLeftOutlined, StarOutlined } from '@ant-design/icons'
 import useOrderDetail from '../../hooks/useOrderDetail'
+import useAuthStore from '../../store/authStore'
 import { formatCurrency, getDisplayPrice } from '../../utils/price'
+import ReviewForm from '../../components/client/ReviewForm'
 import './OrderSuccess.css'
 
 const { Title, Text } = Typography
@@ -41,7 +43,9 @@ const stepMap = {
 function OrderDetail() {
   const { orderId } = useParams()
   const { order, loading, error, cancelOrder } = useOrderDetail(orderId)
+  const { isAuthenticated } = useAuthStore()
   const [cancelling, setCancelling] = useState(false)
+  const [reviewProduct, setReviewProduct] = useState(null)
 
   if (loading) {
     return <div className="order-loading"><Spin size="large" /></div>
@@ -90,6 +94,24 @@ function OrderDetail() {
       key: 'total',
       render: (val) => formatCurrency(val),
     },
+    ...(order.status === 'delivered' ? [
+      {
+        title: '',
+        key: 'action',
+        render: (_, record) => (
+          <Button
+            type="link"
+            icon={<StarOutlined />}
+            onClick={() => setReviewProduct({
+              _id: record.product_id,
+              title: record.productInfo?.title
+            })}
+          >
+            Đánh giá
+          </Button>
+        ),
+      }
+    ] : []),
   ]
 
   return (
@@ -187,6 +209,13 @@ function OrderDetail() {
           <Button>Tiếp tục mua sắm</Button>
         </Link>
       </div>
+
+      <ReviewForm
+        productId={reviewProduct?._id}
+        open={!!reviewProduct}
+        onClose={() => setReviewProduct(null)}
+        onSuccess={() => setReviewProduct(null)}
+      />
     </div>
   )
 }
