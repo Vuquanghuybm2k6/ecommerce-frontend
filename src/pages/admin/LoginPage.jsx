@@ -5,6 +5,7 @@ import { GoogleOutlined } from '@ant-design/icons'
 import useAdminAuth from '../../hooks/useAdminAuth'
 import useAdminAuthStore from '../../store/adminAuthStore'
 import { setAdminTokens } from '../../utils/token'
+import axiosClient from '../../api/axiosClient'
 import { BASE_URL } from '../../api/endpoints'
 import './LoginPage.css'
 
@@ -23,8 +24,7 @@ function AdminLoginPage() {
     }
 
     const params = new URLSearchParams(window.location.search)
-    const accessToken = params.get('accessToken')
-    const refreshToken = params.get('refreshToken')
+    const code = params.get('code')
     const authError = params.get('error')
 
     if (authError) {
@@ -32,11 +32,21 @@ function AdminLoginPage() {
       window.history.replaceState({}, '', '/admin/login')
     }
 
-    if (accessToken && refreshToken) {
-      setAdminTokens({ accessToken, refreshToken })
-      storeLogin({ accessToken, refreshToken }, {})
-      fetchAdminUser().then(() => navigate('/admin'))
-      window.history.replaceState({}, '', '/admin/login')
+    if (code) {
+      axiosClient.post('/api/admin/auth/exchange-code', { code })
+        .then(res => {
+          const { accessToken, refreshToken } = res.data.data
+          setAdminTokens({ accessToken, refreshToken })
+          storeLogin({ accessToken, refreshToken }, {})
+          return fetchAdminUser()
+        })
+        .then(() => {
+          window.history.replaceState({}, '', '/admin/login')
+          navigate('/admin')
+        })
+        .catch(() => {
+          message.error('Đăng nhập thất bại')
+        })
     }
   }, [isAuthenticated, navigate, storeLogin, setUser, fetchAdminUser])
 

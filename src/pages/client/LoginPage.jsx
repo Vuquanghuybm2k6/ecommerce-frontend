@@ -8,6 +8,7 @@ import { setTokens } from '../../utils/token'
 import { getCartId } from '../../utils/cartId'
 import useCartStore from '../../store/cartStore'
 import axiosClientAuth from '../../api/axiosClientAuth'
+import axiosClient from '../../api/axiosClient'
 import { BASE_URL } from '../../api/endpoints'
 import './LoginPage.css'
 
@@ -23,8 +24,7 @@ function LoginPage() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    const accessToken = params.get('accessToken')
-    const refreshToken = params.get('refreshToken')
+    const code = params.get('code')
     const authError = params.get('error')
 
     if (authError) {
@@ -32,23 +32,29 @@ function LoginPage() {
       window.history.replaceState({}, '', '/user/login')
     }
 
-    if (accessToken && refreshToken) {
-      setTokens({ accessToken, refreshToken })
-      storeLogin({ accessToken, refreshToken }, {})
+    if (code) {
+      axiosClient.post('/api/auth/exchange-code', { code })
+        .then(res => {
+          const { accessToken, refreshToken } = res.data.data
+          setTokens({ accessToken, refreshToken })
+          storeLogin({ accessToken, refreshToken }, {})
 
-      const cartId = params.get('cartId')
-      if (cartId) updateCartId(cartId)
+          const cartId = params.get('cartId')
+          if (cartId) updateCartId(cartId)
 
-      axiosClientAuth.get('/api/user/info')
+          return axiosClientAuth.get('/api/user/info')
+        })
         .then(res => {
           setUser(res.data.data.user)
-        })
-        .catch(() => {})
 
-      const redirect = sessionStorage.getItem('loginRedirect') || '/'
-      sessionStorage.removeItem('loginRedirect')
-      window.history.replaceState({}, '', '/user/login')
-      navigate(redirect)
+          const redirect = sessionStorage.getItem('loginRedirect') || '/'
+          sessionStorage.removeItem('loginRedirect')
+          window.history.replaceState({}, '', '/user/login')
+          navigate(redirect)
+        })
+        .catch(() => {
+          message.error('Đăng nhập thất bại')
+        })
     }
   }, [navigate, storeLogin, setUser])
 
