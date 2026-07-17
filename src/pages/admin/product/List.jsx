@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Typography, Table, Image, Switch, Space, Button, Input, Pagination, Modal } from 'antd'
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
+import { Typography, Table, Image, Switch, Space, Button, Input, Pagination, Modal, Dropdown } from 'antd'
+import { PlusOutlined, SearchOutlined, DownOutlined } from '@ant-design/icons'
 import useAdminProducts from '../../../hooks/useAdminProducts'
 import AdminFilterStatus from '../../../components/admin/AdminFilterStatus'
 
@@ -19,7 +19,7 @@ function AdminProductList() {
 
   const {
     products, filterStatus, pagination,
-    loading, changeStatus, changeMulti, deleteProduct
+    loading, changeStatus, changeMulti, deleteProduct, seedData
   } = useAdminProducts({ status, keyword, page, sortKey, sortValue })
 
   const updateParams = useCallback((updates) => {
@@ -146,9 +146,23 @@ function AdminProductList() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
         <Title level={3}>Danh sách sản phẩm</Title>
-        <Link to="/admin/products/create">
-          <Button type="primary" icon={<PlusOutlined />}>Thêm mới</Button>
-        </Link>
+        <Space>
+          <Dropdown
+            menu={{
+              items: [
+                { key: '10', label: '10 sản phẩm' },
+                { key: '20', label: '20 sản phẩm' },
+                { key: '50', label: '50 sản phẩm' },
+              ],
+              onClick: ({ key }) => seedData(parseInt(key)),
+            }}
+          >
+            <Button icon={<DownOutlined />}>Tạo dữ liệu mẫu</Button>
+          </Dropdown>
+          <Link to="/admin/products/create">
+            <Button type="primary" icon={<PlusOutlined />}>Thêm mới</Button>
+          </Link>
+        </Space>
       </div>
 
       <Space direction="vertical" style={{ width: '100%' }} size="middle">

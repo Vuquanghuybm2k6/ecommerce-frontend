@@ -50,6 +50,7 @@ const API = {
   adminProductChangeStatus: (status, id) => `/api/admin/products/change-status/${status}/${id}`,
   adminProductChangeMulti: '/api/admin/products/change-multi',
   adminProductDelete: (id) => `/api/admin/products/delete/${id}`,
+  adminProductSeed: '/api/admin/products/seed',
   adminCategories: '/api/admin/products-category',
   adminCategoryCreate: '/api/admin/products-category/create',
   adminCategoryEdit: (id) => `/api/admin/products-category/edit/${id}`,

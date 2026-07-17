@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { notification } from 'antd'
 import axiosClient from '../api/axiosClient'
 import API from '../api/endpoints'
@@ -8,6 +8,7 @@ function useCart() {
   const [cart, setCart] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const fetchId = useRef(0)
 
   const { cartId, updateCartId, setTotalQuantity, setCart: setCartStore } = useCartStore()
 
@@ -27,16 +28,19 @@ function useCart() {
       return
     }
 
+    const id = ++fetchId.current
     setLoading(true)
     setError(null)
 
     try {
       const res = await axiosClient.get(API.cart)
+      if (id !== fetchId.current) return
       syncCart(res.data.data.cart)
     } catch (err) {
+      if (id !== fetchId.current) return
       setError(err)
     } finally {
-      setLoading(false)
+      if (id === fetchId.current) setLoading(false)
     }
   }, [cartId, syncCart])
 

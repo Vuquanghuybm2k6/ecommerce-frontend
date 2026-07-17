@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import axiosClientAuth from '../api/axiosClientAuth'
 import API from '../api/endpoints'
-import { removeCartId } from '../utils/cartId'
 import useCartStore from '../store/cartStore'
 
 function usePlaceOrder() {
   const [placing, setPlacing] = useState(false)
   const [error, setError] = useState(null)
-  const { setCart, setTotalQuantity } = useCartStore()
+  const { resetCart } = useCartStore()
 
   const placeOrder = async (orderData) => {
     setPlacing(true)
@@ -17,9 +16,7 @@ function usePlaceOrder() {
       const res = await axiosClientAuth.post(API.checkoutOrder, orderData)
       const { orderId, orderCode, paymentUrl } = res.data.data
 
-      setCart(null)
-      setTotalQuantity(0)
-      removeCartId()
+      resetCart()
 
       if (paymentUrl) {
         window.location.href = paymentUrl

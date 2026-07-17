@@ -62,7 +62,18 @@ function useAdminProducts({ status, keyword, page, sortKey, sortValue } = {}) {
     }
   }, [fetchProducts])
 
-  return { products, filterStatus, pagination, loading, error, changeStatus, changeMulti, deleteProduct }
+  const seedData = useCallback(async (count = 10) => {
+    try {
+      const res = await axiosAdminAuth.post(API.adminProductSeed, { count })
+      message.success(res.data.message)
+      fetchProducts()
+      return res.data.data.count
+    } catch {
+      message.error('Tạo dữ liệu mẫu thất bại')
+    }
+  }, [fetchProducts])
+
+  return { products, filterStatus, pagination, loading, error, changeStatus, changeMulti, deleteProduct, seedData }
 }
 
 export default useAdminProducts
