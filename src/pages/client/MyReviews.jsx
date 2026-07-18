@@ -111,7 +111,7 @@ function MyReviews() {
       render: (_, record) => (
         <div className="review-product-cell">
           <img
-            src={record.product?.thumbnail}
+            src={record.product?.variants?.[0]?.thumbnail || ''}
             alt={record.product?.title}
             className="review-product-thumb"
           />

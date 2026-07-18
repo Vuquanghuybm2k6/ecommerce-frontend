@@ -7,8 +7,12 @@ import './ProductCard.css'
 const { Meta } = Card
 
 function ProductCard({ product, highlightKeyword }) {
-  const { title, price, discountPercentage, priceNew, thumbnail, slug, ratingAvg, ratingCount } = product
-  const hasDiscount = discountPercentage > 0
+  const { title, priceNew, slug, ratingAvg, ratingCount } = product
+  const v = product.variants?.[0]
+  const variantPrice = v?.price || 0
+  const variantDiscount = v?.discountPercentage || 0
+  const thumbnail = v?.thumbnail || ''
+  const hasDiscount = variantDiscount > 0
   const displayPrice = getDisplayPrice(product)
 
   return (
@@ -21,7 +25,7 @@ function ProductCard({ product, highlightKeyword }) {
             <img alt={title} src={thumbnail} />
             {hasDiscount && (
               <Tag color="red" className="discount-tag">
-                -{discountPercentage}%
+                -{variantDiscount}%
               </Tag>
             )}
           </div>
@@ -38,12 +42,12 @@ function ProductCard({ product, highlightKeyword }) {
                       {formatCurrency(displayPrice)}
                     </span>
                     <span className="product-price-old">
-                      {formatCurrency(price)}
+                      {formatCurrency(variantPrice)}
                     </span>
                   </>
                 ) : (
                   <span className="product-price">
-                    {formatCurrency(price)}
+                    {formatCurrency(variantPrice)}
                   </span>
                 )}
               </div>

@@ -87,6 +87,14 @@
   margin-bottom: 12px;
 }
 
+.detail-variant-group {
+  margin-bottom: 12px;
+}
+
+.detail-variant-label {
+  margin-bottom: 12px;
+}
+
 .detail-actions {
   display: flex;
   align-items: center;

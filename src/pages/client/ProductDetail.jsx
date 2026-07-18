@@ -31,13 +31,25 @@ function ProductDetail() {
   const [editFileList, setEditFileList] = useState([])
   const [editUploading, setEditUploading] = useState(false)
   const [editSubmitting, setEditSubmitting] = useState(false)
+  const [selectedOptions, setSelectedOptions] = useState({})
+
+  const handleOptionSelect = (key, value) => {
+    setSelectedOptions(prev => ({ ...prev, [key]: value }))
+  }
 
   const handleAddToCart = async () => {
     if (!product) return
+    if (hasVariants && !fullMatch) {
+      notification.warning({ message: 'Thông báo', description: 'Vui lòng chọn đầy đủ các tùy chọn', placement: 'topRight', duration: 3 })
+      return
+    }
     setAdding(true)
 
     try {
-      const res = await axiosClient.post(API.cartAdd(product._id), { quantity })
+      const res = await axiosClient.post(API.cartAdd(product._id), {
+        quantity,
+        variantSku: fullMatch?.sku || undefined,
+      })
       const updatedCart = res.data.data.cart
       updateCartId(updatedCart._id)
       const totalQty = updatedCart.products.reduce((sum, item) => sum + item.quantity, 0)
@@ -165,20 +177,46 @@ function ProductDetail() {
 
   const {
     title,
-    price,
-    discountPercentage,
-    priceNew,
-    stock,
-    thumbnail,
     description,
     category,
     ratingAvg,
     ratingCount,
   } = product
 
-  const hasDiscount = discountPercentage > 0
-  const inStock = stock > 0
-  const displayPrice = getDisplayPrice(product)
+  const activeVariants = product.variants?.filter(v => v.status !== 'inactive') || []
+  const optionTypes = activeVariants.reduce((acc, v) => {
+    v.options.forEach(opt => {
+      if (!acc[opt.key]) acc[opt.key] = []
+      if (!acc[opt.key].includes(opt.value)) acc[opt.key].push(opt.value)
+    })
+    return acc
+  }, {})
+
+  const fullMatch = activeVariants.find(v =>
+    v.options.every(opt => selectedOptions[opt.key] === opt.value)
+  )
+
+  const selectedKeys = Object.keys(selectedOptions).filter(k => selectedOptions[k])
+  const partialMatch = !fullMatch && selectedKeys.length > 0
+    ? activeVariants.find(v =>
+        selectedKeys.every(k => v.options.some(o => o.key === k && o.value === selectedOptions[k]))
+      )
+    : null
+
+  const match = fullMatch || partialMatch
+
+  const defaultVariant = activeVariants[0] || {}
+  const hasVariants = activeVariants.length > 0
+  const currentPrice = match?.price ?? defaultVariant.price ?? 0
+  const currentDiscount = match?.discountPercentage ?? defaultVariant.discountPercentage ?? 0
+  const hasDiscount = currentDiscount > 0
+  const displayPrice = currentDiscount > 0
+    ? Math.round(currentPrice - (currentPrice * currentDiscount) / 100)
+    : currentPrice
+  const currentStock = match?.stock ?? defaultVariant.stock ?? 0
+  const inStock = currentStock > 0
+  const currentThumbnail = match?.thumbnail || defaultVariant.thumbnail || ''
+  const clampedQuantity = Math.min(quantity, currentStock || 1)
 
   return (
     <div className="product-detail-page">
@@ -195,7 +233,7 @@ function ProductDetail() {
 
       <div className="detail-main">
         <div className="detail-image">
-          <img alt={title} src={thumbnail} />
+          <img alt={title} src={currentThumbnail} />
         </div>
 
         <div className="detail-info">
@@ -220,21 +258,45 @@ function ProductDetail() {
             {hasDiscount ? (
               <>
                 <span className="detail-price-new">{formatCurrency(displayPrice)}</span>
-                <span className="detail-price-old">{formatCurrency(price)}</span>
-                <Tag color="red">-{discountPercentage}%</Tag>
+                <span className="detail-price-old">{formatCurrency(currentPrice)}</span>
+                <Tag color="red">-{currentDiscount}%</Tag>
               </>
             ) : (
-              <span className="detail-price">{formatCurrency(price)}</span>
+              <span className="detail-price">{formatCurrency(currentPrice)}</span>
             )}
           </div>
 
           <div className="detail-stock">
             {inStock ? (
-              <Tag color="green">Còn hàng ({stock})</Tag>
+              <Tag color="green">Còn hàng ({currentStock})</Tag>
             ) : (
               <Tag color="red">Hết hàng</Tag>
             )}
           </div>
+
+          {hasVariants && Object.entries(optionTypes).map(([key, values]) => (
+            <div key={key} className="detail-variant-group">
+              <Text strong style={{ display: 'block', marginBottom: 4 }}>{key}:</Text>
+              <Space wrap>
+                {values.map(value => (
+                  <Button
+                    key={value}
+                    size="small"
+                    type={selectedOptions[key] === value ? 'primary' : 'default'}
+                    onClick={() => handleOptionSelect(key, value)}
+                  >
+                    {value}
+                  </Button>
+                ))}
+              </Space>
+            </div>
+          ))}
+
+          {fullMatch && (
+            <div className="detail-variant-label">
+              <Text type="secondary">{fullMatch.label}</Text>
+            </div>
+          )}
 
           <Divider />
 
@@ -243,9 +305,9 @@ function ProductDetail() {
               <Text>Số lượng: </Text>
               <InputNumber
                 min={1}
-                max={stock}
-                value={quantity}
-                onChange={setQuantity}
+                max={currentStock}
+                value={clampedQuantity}
+                onChange={(val) => setQuantity(val)}
                 disabled={!inStock}
               />
             </div>

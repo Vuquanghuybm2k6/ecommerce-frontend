@@ -48,9 +48,11 @@ function useCart() {
     fetchCart()
   }, [fetchCart])
 
-  const deleteItem = async (productId) => {
+  const deleteItem = async (productId, variantSku) => {
     try {
-      const res = await axiosClient.delete(API.cartDelete(productId))
+      const res = await axiosClient.delete(API.cartDelete(productId), {
+        data: { variantSku }
+      })
       syncCart(res.data.data.cart)
       notification.success({ message: 'Thông báo', description: 'Đã xóa sản phẩm khỏi giỏ hàng', placement: 'topRight', duration: 3 })
     } catch (err) {
@@ -59,9 +61,9 @@ function useCart() {
     }
   }
 
-  const updateQuantity = async (productId, quantity) => {
+  const updateQuantity = async (productId, quantity, variantSku) => {
     try {
-      const res = await axiosClient.put(API.cartUpdate(productId), { quantity })
+      const res = await axiosClient.put(API.cartUpdate(productId), { quantity, variantSku })
       syncCart(res.data.data.cart)
     } catch (err) {
       setError(err)

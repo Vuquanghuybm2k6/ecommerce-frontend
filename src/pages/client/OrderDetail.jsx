@@ -70,10 +70,13 @@ function OrderDetail() {
       title: 'Sản phẩm',
       dataIndex: 'productInfo',
       key: 'product',
-      render: (info) => (
+      render: (info, record) => (
         <div className="order-product-cell">
           <img src={info?.thumbnail} alt={info?.title} className="order-product-thumb" />
           <span>{info?.title}</span>
+          {record.variantLabel && (
+            <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{record.variantLabel}</div>
+          )}
         </div>
       ),
     },

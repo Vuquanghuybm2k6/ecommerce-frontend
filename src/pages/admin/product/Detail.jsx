@@ -1,9 +1,9 @@
 import { useNavigate, useParams, Link } from 'react-router-dom'
-import { Typography, Image, Tag, Descriptions, Button, Space, Spin } from 'antd'
+import { Typography, Image, Tag, Descriptions, Button, Space, Spin, Table } from 'antd'
 import { ArrowLeftOutlined, EditOutlined } from '@ant-design/icons'
 import useAdminProductDetail from '../../../hooks/useAdminProductDetail'
 
-const { Title } = Typography
+const { Title, Text } = Typography
 
 function AdminProductDetail() {
   const { id } = useParams()
@@ -18,6 +18,49 @@ function AdminProductDetail() {
     return <Typography.Text type="danger">Không tìm thấy sản phẩm</Typography.Text>
   }
 
+  const firstVariant = product.variants?.[0]
+  const thumbnail = firstVariant?.thumbnail || ''
+
+  const variantColumns = [
+    { title: 'SKU', dataIndex: 'sku', key: 'sku' },
+    { title: 'Nhãn', dataIndex: 'label', key: 'label' },
+    {
+      title: 'Thuộc tính',
+      key: 'options',
+      render: (_, record) =>
+        record.options?.map(o => `${o.key}: ${o.value}`).join(', ') || '',
+    },
+    {
+      title: 'Giá',
+      dataIndex: 'price',
+      key: 'price',
+      render: v => v?.toLocaleString() + 'đ',
+    },
+    {
+      title: 'Giảm giá',
+      dataIndex: 'discountPercentage',
+      key: 'discountPercentage',
+      render: v => (v || 0) + '%',
+    },
+    { title: 'Tồn kho', dataIndex: 'stock', key: 'stock' },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      key: 'status',
+      render: v => (
+        <Tag color={v === 'active' ? 'green' : 'red'}>
+          {v === 'active' ? 'Hoạt động' : 'Dừng hoạt động'}
+        </Tag>
+      ),
+    },
+    {
+      title: 'Ảnh',
+      dataIndex: 'thumbnail',
+      key: 'thumbnail',
+      render: v => v ? <Image src={v} width={50} /> : null,
+    },
+  ]
+
   return (
     <div>
       <Space style={{ marginBottom: 16 }}>
@@ -30,9 +73,9 @@ function AdminProductDetail() {
       <Title level={3}>Chi tiết sản phẩm</Title>
 
       <div style={{ display: 'flex', gap: 24, marginBottom: 24 }}>
-        {product.thumbnail && (
+        {thumbnail && (
           <Image
-            src={product.thumbnail}
+            src={thumbnail}
             alt={product.title}
             width={200}
             style={{ objectFit: 'cover', borderRadius: 8 }}
@@ -41,9 +84,13 @@ function AdminProductDetail() {
         <div style={{ flex: 1 }}>
           <Descriptions column={2} bordered size="small">
             <Descriptions.Item label="Tiêu đề" span={2}>{product.title}</Descriptions.Item>
-            <Descriptions.Item label="Giá">{product.price?.toLocaleString()}đ</Descriptions.Item>
-            <Descriptions.Item label="Giảm giá">{product.discountPercentage || 0}%</Descriptions.Item>
-            <Descriptions.Item label="Kho">{product.stock}</Descriptions.Item>
+            <Descriptions.Item label="Giá">
+              {firstVariant?.price?.toLocaleString() || 0}đ
+            </Descriptions.Item>
+            <Descriptions.Item label="Giảm giá">
+              {firstVariant?.discountPercentage || 0}%
+            </Descriptions.Item>
+            <Descriptions.Item label="Kho">{firstVariant?.stock || 0}</Descriptions.Item>
             <Descriptions.Item label="Trạng thái">
               <Tag color={product.status === 'active' ? 'green' : 'red'}>
                 {product.status === 'active' ? 'Hoạt động' : 'Dừng hoạt động'}
@@ -57,6 +104,20 @@ function AdminProductDetail() {
           </Descriptions>
         </div>
       </div>
+
+      {product.variants?.length > 0 && (
+        <div style={{ marginBottom: 24 }}>
+          <Title level={5}>Biến thể sản phẩm</Title>
+          <Table
+            dataSource={product.variants}
+            columns={variantColumns}
+            rowKey="sku"
+            pagination={false}
+            bordered
+            size="small"
+          />
+        </div>
+      )}
 
       {product.description && (
         <div>

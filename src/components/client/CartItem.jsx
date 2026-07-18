@@ -5,7 +5,7 @@ import { formatCurrency, getDisplayPrice } from '../../utils/price'
 import './CartItem.css'
 
 function CartItem({ item, onDelete, onUpdateQuantity }) {
-  const { productInfo, quantity, totalPrice, product_id } = item || {}
+  const { productInfo, quantity, totalPrice, product_id, variantSku, variantLabel, variantOptions } = item || {}
   const productData = productInfo || {}
   const title = productData.title || 'Sản phẩm'
   const thumbnail = productData.thumbnail || ''
@@ -21,6 +21,8 @@ function CartItem({ item, onDelete, onUpdateQuantity }) {
     discountPercentage,
   })
 
+  const variantDisplay = variantOptions?.map(opt => `${opt.key}: ${opt.value}`).join(', ')
+
   return (
     <div className="cart-item">
       <div className="cart-item-image">
@@ -33,6 +35,16 @@ function CartItem({ item, onDelete, onUpdateQuantity }) {
         <Link to={`/products/detail/${slug}`} className="cart-item-name">
           {title}
         </Link>
+        {variantLabel && (
+          <div className="cart-item-variant">
+            {variantLabel}
+          </div>
+        )}
+        {variantDisplay && !variantLabel && (
+          <div className="cart-item-variant">
+            {variantDisplay}
+          </div>
+        )}
         <div className="cart-item-price">
           {hasDiscount ? (
             <>
@@ -49,7 +61,7 @@ function CartItem({ item, onDelete, onUpdateQuantity }) {
         <InputNumber
           min={1}
           value={quantity}
-          onChange={(val) => onUpdateQuantity(product_id, val)}
+          onChange={(val) => onUpdateQuantity(product_id, val, variantSku)}
         />
       </div>
 
@@ -61,7 +73,7 @@ function CartItem({ item, onDelete, onUpdateQuantity }) {
         type="text"
         danger
         icon={<DeleteOutlined />}
-        onClick={() => onDelete(product_id)}
+        onClick={() => onDelete(product_id, variantSku)}
         className="cart-item-delete"
       />
     </div>

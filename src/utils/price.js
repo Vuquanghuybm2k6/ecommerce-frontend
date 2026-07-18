@@ -1,17 +1,21 @@
 export function getDisplayPrice(product = {}) {
-  const price = Number(product.price)
   const priceNew = Number(product.priceNew)
-  const discountPercentage = Number(product.discountPercentage)
 
   if (Number.isFinite(priceNew) && priceNew > 0) {
     return priceNew
   }
 
-  if (Number.isFinite(price) && Number.isFinite(discountPercentage) && discountPercentage > 0) {
-    return Math.round(price - (price * discountPercentage) / 100)
+  const v = product.variants?.[0]
+  if (v) {
+    const price = Number(v.price)
+    const discount = Number(v.discountPercentage)
+    if (price > 0) {
+      if (discount > 0) return Math.round(price - (price * discount) / 100)
+      return price
+    }
   }
 
-  return Number.isFinite(price) ? price : 0
+  return 0
 }
 
 export function formatCurrency(value) {
