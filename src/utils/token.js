@@ -10,7 +10,7 @@ export const getAccessToken = () => getCookie(ACCESS_KEY)
 export const getRefreshToken = () => getCookie(REFRESH_KEY)
 export const setTokens = ({ accessToken, refreshToken }) => {
   setCookie(ACCESS_KEY, accessToken)
-  setCookie(REFRESH_KEY, refreshToken)
+  setCookie(REFRESH_KEY, refreshToken, 7)
 }
 export const removeTokens = () => {
   removeCookie(ACCESS_KEY)
@@ -22,7 +22,7 @@ export const getAdminAccessToken = () => getCookie(ADMIN_ACCESS_KEY)
 export const getAdminRefreshToken = () => getCookie(ADMIN_REFRESH_KEY)
 export const setAdminTokens = ({ accessToken, refreshToken }) => {
   setCookie(ADMIN_ACCESS_KEY, accessToken)
-  setCookie(ADMIN_REFRESH_KEY, refreshToken)
+  setCookie(ADMIN_REFRESH_KEY, refreshToken, 7)
 }
 export const removeAdminTokens = () => {
   removeCookie(ADMIN_ACCESS_KEY)

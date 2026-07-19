@@ -34,9 +34,7 @@ function ClientLayout() {
     if (isAuthenticated && !user) {
       axiosClientAuth.get(API.userInfo).then(res => {
         setUser(res.data.data.user)
-      }).catch(() => {
-        storeLogout()
-      })
+      }).catch(() => {})
     }
 
     if (cartId) {

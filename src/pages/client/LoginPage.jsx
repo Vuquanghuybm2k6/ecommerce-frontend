@@ -42,15 +42,14 @@ function LoginPage() {
           const cartId = params.get('cartId')
           if (cartId) updateCartId(cartId)
 
-          return axiosClientAuth.get('/api/user/info')
-        })
-        .then(res => {
-          setUser(res.data.data.user)
-
           const redirect = sessionStorage.getItem('loginRedirect') || '/'
           sessionStorage.removeItem('loginRedirect')
           window.history.replaceState({}, '', '/user/login')
           navigate(redirect)
+
+          axiosClientAuth.get('/api/user/info')
+            .then(res => setUser(res.data.data.user))
+            .catch(() => {})
         })
         .catch(() => {
           message.error('Đăng nhập thất bại')

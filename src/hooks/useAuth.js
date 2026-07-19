@@ -28,7 +28,7 @@ function useAuth() {
       const res = await axiosClientAuth.get(API.userInfo)
       setUser(res.data.data.user)
     } catch {
-      storeLogout()
+      // Interceptor đã xử lý refresh token, không cần logout ở đây
     }
   }
 
