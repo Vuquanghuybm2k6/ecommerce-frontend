@@ -36,19 +36,21 @@ function ClientLayout() {
         setUser(res.data.data.user)
       }).catch(() => {})
     }
+  }, [isAuthenticated])
 
-    if (cartId) {
-      axiosClient.get(API.cart).then(res => {
-        const cartData = res.data.data.cart
-        setCartStore(cartData)
+  useEffect(() => {
+    if (!cartId) return
+
+    axiosClient.get(API.cart).then(res => {
+      const cartData = res.data.data.cart
+      setCartStore(cartData)
+      if (cartData._id !== cartId) {
         updateCartId(cartData._id)
-        const qty = cartData.products.reduce((sum, item) => sum + item.quantity, 0)
-        setTotalQuantity(qty)
-      }).catch(() => {})
-    }
-
-    fetchUnreadCount()
-  }, [cartId, isAuthenticated, location.pathname])
+      }
+      const qty = cartData.products.reduce((sum, item) => sum + item.quantity, 0)
+      setTotalQuantity(qty)
+    }).catch(() => {})
+  }, [cartId])
 
   useEffect(() => {
     const handleNotifRead = () => fetchUnreadCount()
