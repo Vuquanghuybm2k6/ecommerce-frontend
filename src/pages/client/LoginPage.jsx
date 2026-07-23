@@ -116,7 +116,7 @@ function LoginPage() {
 
         <Divider>Hoặc</Divider>
 
-        <a href={`${BASE_URL}/api/auth/google${getCartId() ? '?cartId=' + getCartId() : ''}`} className="google-btn" onClick={handleGoogleLogin}>
+        <a href={`${BASE_URL}/api/auth/google?origin=${encodeURIComponent(window.location.origin)}${getCartId() ? '&cartId=' + getCartId() : ''}`} className="google-btn" onClick={handleGoogleLogin}>
           <Button icon={<GoogleOutlined />} size="large" block>
             Đăng nhập bằng Google
           </Button>
