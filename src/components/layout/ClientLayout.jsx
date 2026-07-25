@@ -19,9 +19,13 @@ const { Text } = Typography
 function ClientLayout() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { user, isAuthenticated, logout: storeLogout, setUser } = useAuthStore()
+  const { user, isAuthenticated, isInitialized, initialize, logout: storeLogout, setUser } = useAuthStore()
   const { cartId, totalQuantity, setCart: setCartStore, updateCartId, setTotalQuantity } = useCartStore()
   const [unreadNotifCount, setUnreadNotifCount] = useState(0)
+
+  useEffect(() => {
+    if (!isInitialized) initialize()
+  }, [isInitialized])
 
   const fetchUnreadCount = () => {
     if (!isAuthenticated) return

@@ -14,8 +14,8 @@ function useVerifyOtp() {
 
     try {
       const res = await axiosClient.post(API.userOtp, { email, otp })
-      const { accessToken, refreshToken } = res.data.data
-      login({ accessToken, refreshToken }, {})
+      const { accessToken } = res.data.data
+      login(accessToken, {})
       return true
     } catch (err) {
       const msg = err.response?.data?.message || 'Xác thực OTP thất bại'

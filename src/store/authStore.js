@@ -1,28 +1,38 @@
 import { create } from 'zustand'
-import { getAccessToken, setTokens, removeTokens } from '../utils/token'
-
-const isTokenExpired = (token) => {
-  if (!token) return true
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    return payload.exp * 1000 < Date.now()
-  } catch {
-    return true
-  }
-}
+import axios from 'axios'
+import { BASE_URL } from '../api/endpoints'
+import { removeTokens } from '../utils/token'
 
 const useAuthStore = create((set) => ({
   user: null,
-  isAuthenticated: !!getAccessToken() && !isTokenExpired(getAccessToken()),
+  accessToken: null,
+  isAuthenticated: false,
+  isInitialized: false,
 
-  login: (tokens, user) => {
-    setTokens(tokens)
-    set({ user, isAuthenticated: true })
+  initialize: async () => {
+    try {
+      const { data } = await axios.post(`${BASE_URL}/api/user/refresh-token`, {}, { withCredentials: true })
+      set({
+        accessToken: data.data.accessToken,
+        isAuthenticated: true,
+        isInitialized: true
+      })
+    } catch {
+      set({ isInitialized: true })
+    }
+  },
+
+  login: (accessToken, user) => {
+    set({ accessToken, user, isAuthenticated: true })
+  },
+
+  setAccessToken: (accessToken) => {
+    set({ accessToken, isAuthenticated: true })
   },
 
   logout: () => {
     removeTokens()
-    set({ user: null, isAuthenticated: false })
+    set({ user: null, accessToken: null, isAuthenticated: false })
   },
 
   setUser: (user) => set({ user }),

@@ -81,13 +81,17 @@ const menuItems = [
 function AdminLayout() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { user, isAuthenticated, logout } = useAdminAuthStore()
+  const { user, isAuthenticated, isInitialized, initialize, logout } = useAdminAuthStore()
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isInitialized) initialize()
+  }, [isInitialized])
+
+  useEffect(() => {
+    if (isInitialized && !isAuthenticated) {
       navigate('/admin/login')
     }
-  }, [isAuthenticated, navigate])
+  }, [isInitialized, isAuthenticated, navigate])
 
   const handleLogout = () => {
     logout()

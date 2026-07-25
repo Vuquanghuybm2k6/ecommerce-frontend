@@ -4,7 +4,6 @@ import { Form, Input, Button, Typography, Divider, message } from 'antd'
 import { GoogleOutlined } from '@ant-design/icons'
 import useAuth from '../../hooks/useAuth'
 import useAuthStore from '../../store/authStore'
-import { setTokens } from '../../utils/token'
 import { getCartId } from '../../utils/cartId'
 import useCartStore from '../../store/cartStore'
 import axiosClientAuth from '../../api/axiosClientAuth'
@@ -35,9 +34,8 @@ function LoginPage() {
     if (code) {
       axiosClient.post('/api/auth/exchange-code', { code })
         .then(res => {
-          const { accessToken, refreshToken } = res.data.data
-          setTokens({ accessToken, refreshToken })
-          storeLogin({ accessToken, refreshToken }, {})
+          const { accessToken } = res.data.data
+          storeLogin(accessToken, {})
 
           const cartId = params.get('cartId')
           if (cartId) updateCartId(cartId)

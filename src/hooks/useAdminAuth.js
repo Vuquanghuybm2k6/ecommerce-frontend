@@ -4,7 +4,6 @@ import axiosClient from '../api/axiosClient'
 import axiosAdminAuth from '../api/axiosAdminAuth'
 import API from '../api/endpoints'
 import useAdminAuthStore from '../store/adminAuthStore'
-import { getAdminRefreshToken } from '../utils/token'
 
 function useAdminAuth() {
   const [loading, setLoading] = useState(false)
@@ -29,8 +28,8 @@ function useAdminAuth() {
 
     try {
       const res = await axiosClient.post(API.adminLogin, { email, password })
-      const { accessToken, refreshToken } = res.data.data
-      storeLogin({ accessToken, refreshToken }, {})
+      const { accessToken } = res.data.data
+      storeLogin(accessToken, {})
       await fetchAdminUser()
       navigate('/admin')
     } catch (err) {
@@ -43,10 +42,7 @@ function useAdminAuth() {
 
   const logoutAdmin = async () => {
     try {
-      const refreshToken = getAdminRefreshToken()
-      if (refreshToken) {
-        await axiosClient.post(API.adminLogout, { refreshToken })
-      }
+      await axiosClient.post(API.adminLogout, {}, { withCredentials: true })
     } catch {
       // ignore
     }

@@ -4,7 +4,6 @@ import { Form, Input, Button, Typography, Divider, message } from 'antd'
 import { GoogleOutlined } from '@ant-design/icons'
 import useAdminAuth from '../../hooks/useAdminAuth'
 import useAdminAuthStore from '../../store/adminAuthStore'
-import { setAdminTokens } from '../../utils/token'
 import axiosClient from '../../api/axiosClient'
 import { BASE_URL } from '../../api/endpoints'
 import './LoginPage.css'
@@ -35,9 +34,8 @@ function AdminLoginPage() {
     if (code) {
       axiosClient.post('/api/admin/auth/exchange-code', { code })
         .then(res => {
-          const { accessToken, refreshToken } = res.data.data
-          setAdminTokens({ accessToken, refreshToken })
-          storeLogin({ accessToken, refreshToken }, {})
+          const { accessToken } = res.data.data
+          storeLogin(accessToken, {})
           return fetchAdminUser()
         })
         .then(() => {

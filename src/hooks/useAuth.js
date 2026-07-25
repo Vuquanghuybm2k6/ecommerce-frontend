@@ -5,7 +5,6 @@ import axiosClientAuth from '../api/axiosClientAuth'
 import API from '../api/endpoints'
 import useAuthStore from '../store/authStore'
 import useCartStore from '../store/cartStore'
-import { getRefreshToken } from '../utils/token'
 import { setCartId } from '../utils/cartId'
 
 function useAuth() {
@@ -38,8 +37,8 @@ function useAuth() {
 
     try {
       const res = await axiosClient.post(API.userLogin, { email, password })
-      const { user, accessToken, refreshToken, cartId } = res.data.data
-      storeLogin({ accessToken, refreshToken }, user)
+      const { user, accessToken, cartId } = res.data.data
+      storeLogin(accessToken, user)
       saveCartId(cartId)
       await fetchUser()
       const params = new URLSearchParams(location.search)
@@ -69,8 +68,8 @@ function useAuth() {
       const res = await axiosClient.post(API.userRegister, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      const { user, accessToken, refreshToken, cartId } = res.data.data
-      storeLogin({ accessToken, refreshToken }, user)
+      const { user, accessToken, cartId } = res.data.data
+      storeLogin(accessToken, user)
       saveCartId(cartId)
       await fetchUser()
       navigate('/')
@@ -84,10 +83,7 @@ function useAuth() {
 
   const logoutUser = async () => {
     try {
-      const refreshToken = getRefreshToken()
-      if (refreshToken) {
-        await axiosClient.post(API.userLogout, { refreshToken })
-      }
+      await axiosClient.post(API.userLogout, {}, { withCredentials: true })
     } catch {
       // ignore logout errors
     }
