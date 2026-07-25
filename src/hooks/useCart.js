@@ -3,6 +3,7 @@ import { notification } from 'antd'
 import axiosClient from '../api/axiosClient'
 import API from '../api/endpoints'
 import useCartStore from '../store/cartStore'
+import { getCartId } from '../utils/cartId'
 
 function useCart() {
   const [cart, setCart] = useState(null)
@@ -23,11 +24,6 @@ function useCart() {
   }, [updateCartId, setTotalQuantity, setCartStore])
 
   const fetchCart = useCallback(async () => {
-    if (!cartId) {
-      setLoading(false)
-      return
-    }
-
     const id = ++fetchId.current
     setLoading(true)
     setError(null)
