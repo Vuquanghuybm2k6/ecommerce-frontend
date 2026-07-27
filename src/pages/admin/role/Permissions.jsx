@@ -16,19 +16,29 @@ const permissionGroups = [
   {
     title: 'Sản phẩm',
     children: [
-      { key: 'products_view', label: 'Xem danh sách' },
-      { key: 'products_create', label: 'Thêm mới' },
-      { key: 'products_edit', label: 'Chỉnh sửa' },
-      { key: 'products_delete', label: 'Xóa' },
+      { key: 'products_view', label: 'Xem sản phẩm' },
+      { key: 'products_create', label: 'Thêm sản phẩm' },
+      { key: 'products_edit', label: 'Sửa sản phẩm' },
+      { key: 'products_delete', label: 'Xóa sản phẩm' },
+      { key: 'category_view', label: 'Xem danh mục' },
+      { key: 'category_create', label: 'Thêm danh mục' },
+      { key: 'category_edit', label: 'Sửa danh mục' },
+      { key: 'category_delete', label: 'Xóa danh mục' },
     ],
   },
   {
-    title: 'Danh mục sản phẩm',
+    title: 'Đơn hàng',
     children: [
-      { key: 'product-category_view', label: 'Xem danh sách' },
-      { key: 'product-category_create', label: 'Thêm mới' },
-      { key: 'product-category_edit', label: 'Chỉnh sửa' },
-      { key: 'product-category_delete', label: 'Xóa' },
+      { key: 'orders_view', label: 'Xem đơn hàng' },
+      { key: 'orders_edit', label: 'Cập nhật trạng thái' },
+      { key: 'orders_delete', label: 'Xóa đơn hàng' },
+    ],
+  },
+  {
+    title: 'Đánh giá',
+    children: [
+      { key: 'reviews_view', label: 'Xem đánh giá' },
+      { key: 'reviews_delete', label: 'Xóa đánh giá' },
     ],
   },
   {

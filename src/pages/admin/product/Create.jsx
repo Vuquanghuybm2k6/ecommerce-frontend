@@ -29,15 +29,6 @@ function CreateProduct() {
 
   const fileInputRefs = useRef({})
 
-  const [matrixSelections, setMatrixSelections] = useState({})
-  const [matrixPrice, setMatrixPrice] = useState(0)
-  const [matrixDiscount, setMatrixDiscount] = useState(0)
-  const [matrixStock, setMatrixStock] = useState(0)
-  const [matrixThumbnail, setMatrixThumbnail] = useState('')
-  const [matrixThumbnailFile, setMatrixThumbnailFile] = useState(null)
-  const [matrixThumbnailPreview, setMatrixThumbnailPreview] = useState('')
-  const fileInputRefMatrix = useRef(null)
-
   const [batchColor, setBatchColor] = useState('')
   const [batchVersions, setBatchVersions] = useState([])
   const [batchPrice, setBatchPrice] = useState(0)
@@ -79,70 +70,6 @@ function CreateProduct() {
     setBatchThumbnailFile(file)
     setBatchThumbnailPreview(URL.createObjectURL(file))
     setBatchThumbnail('')
-  }
-
-  useEffect(() => {
-    const selections = {}
-    if (attrDefs.length >= 2) {
-      attrDefs[0].values.forEach(r => attrDefs[1].values.forEach(c => {
-        selections[`${r}|${c}`] = false
-      }))
-    }
-    setMatrixSelections(selections)
-    setMatrixThumbnail('')
-    setMatrixThumbnailFile(null)
-    setMatrixThumbnailPreview('')
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(attrDefs.map(d => [d.name, ...d.values]))])
-
-  const toggleMatrixCell = (rowVal, colVal) => {
-    setMatrixSelections(prev => ({ ...prev, [`${rowVal}|${colVal}`]: !prev[`${rowVal}|${colVal}`] }))
-  }
-
-  const selectAllMatrix = () => {
-    const selections = {}
-    attrDefs[0].values.forEach(r => attrDefs[1].values.forEach(c => {
-      selections[`${r}|${c}`] = true
-    }))
-    setMatrixSelections(selections)
-  }
-
-  const clearAllMatrix = () => {
-    const selections = {}
-    attrDefs[0].values.forEach(r => attrDefs[1].values.forEach(c => {
-      selections[`${r}|${c}`] = false
-    }))
-    setMatrixSelections(selections)
-  }
-
-  const generateFromMatrix = () => {
-    const selectedKeys = Object.entries(matrixSelections)
-      .filter(([, v]) => v)
-      .map(([k]) => k)
-    if (selectedKeys.length === 0) return
-    const [attr0, attr1] = [attrDefs[0].name, attrDefs[1].name]
-    setVariants(selectedKeys.map(key => {
-      const [v0, v1] = key.split('|')
-      return {
-        tempId: Date.now() + Math.random(),
-        sku: '',
-        price: matrixPrice,
-        discountPercentage: matrixDiscount,
-        stock: matrixStock,
-        thumbnail: matrixThumbnailFile ? '' : (matrixThumbnail || ''),
-        thumbnailFile: matrixThumbnailFile,
-        thumbnailPreview: matrixThumbnailPreview,
-        attrValues: { [attr0]: v0, [attr1]: v1 },
-        status: 'active',
-      }
-    }))
-  }
-
-  const handleMatrixThumbnailFile = (file) => {
-    if (matrixThumbnailPreview) URL.revokeObjectURL(matrixThumbnailPreview)
-    setMatrixThumbnailFile(file)
-    setMatrixThumbnailPreview(URL.createObjectURL(file))
-    setMatrixThumbnail('')
   }
 
   const addAttrValue = (attrName, val) => {
@@ -202,6 +129,9 @@ function CreateProduct() {
       const options = Object.entries(attrValues || {}).map(([key, value]) => ({ key, value }))
       return {
         ...rest,
+        price: rest.price ?? 0,
+        discountPercentage: rest.discountPercentage ?? 0,
+        stock: rest.stock ?? 0,
         thumbnail: _f ? '' : (rest.thumbnail || ''),
         options,
         label: Object.values(attrValues || {}).filter(Boolean).join(' '),
@@ -310,96 +240,6 @@ function CreateProduct() {
               </div>
             </div>
           </div>
-
-          {attrDefs.length >= 2 && attrDefs[0].values.length > 0 && attrDefs[1].values.length > 0 && (
-            <div style={{ marginBottom: 16, padding: 12, background: '#fafafa', borderRadius: 6, border: '1px solid #f0f0f0' }}>
-              <Text strong style={{ fontSize: 14, display: 'block', marginBottom: 8 }}>Ma trận biến thể</Text>
-              <div style={{ marginBottom: 8 }}>
-                <Button size="small" onClick={selectAllMatrix} style={{ marginRight: 6 }}>Chọn tất cả</Button>
-                <Button size="small" onClick={clearAllMatrix}>Bỏ chọn tất cả</Button>
-              </div>
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ borderCollapse: 'collapse', fontSize: 13 }}>
-                  <thead>
-                    <tr>
-                      <th style={{ padding: '4px 10px', border: '1px solid #d9d9d9', background: '#f0f0f0', textAlign: 'left' }}>{attrDefs[0].name}</th>
-                      {attrDefs[1].values.map(c => (
-                        <th key={c} style={{ padding: '4px 10px', border: '1px solid #d9d9d9', background: '#f0f0f0', textAlign: 'center', minWidth: 80 }}>{c}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {attrDefs[0].values.map(r => (
-                      <tr key={r}>
-                        <td style={{ padding: '4px 10px', border: '1px solid #d9d9d9', fontWeight: 500 }}>{r}</td>
-                        {attrDefs[1].values.map(c => {
-                          const key = `${r}|${c}`
-                          return (
-                            <td key={key} style={{ padding: '4px 10px', border: '1px solid #d9d9d9', textAlign: 'center' }}>
-                              <input
-                                type="checkbox"
-                                checked={!!matrixSelections[key]}
-                                onChange={() => toggleMatrixCell(r, c)}
-                              />
-                            </td>
-                          )
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div style={{ marginTop: 12, display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-end' }}>
-                <div>
-                  <Text style={{ fontSize: 12, display: 'block', marginBottom: 2 }}>Giá chung</Text>
-                  <InputNumber addonBefore="₫" min={0} value={matrixPrice} onChange={setMatrixPrice} style={{ width: 130 }} />
-                </div>
-                <div>
-                  <Text style={{ fontSize: 12, display: 'block', marginBottom: 2 }}>Giảm chung</Text>
-                  <InputNumber min={0} max={100} value={matrixDiscount} onChange={setMatrixDiscount} addonAfter="%" style={{ width: 110 }} />
-                </div>
-                <div>
-                  <Text style={{ fontSize: 12, display: 'block', marginBottom: 2 }}>Tồn chung</Text>
-                  <InputNumber min={0} value={matrixStock} onChange={setMatrixStock} style={{ width: 110 }} />
-                </div>
-                <div>
-                  <Text style={{ fontSize: 12, display: 'block', marginBottom: 2 }}>Ảnh chung</Text>
-                  <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                    <div
-                      onClick={() => fileInputRefMatrix.current?.click()}
-                      style={{
-                        width: 50, height: 50, border: '1px dashed #d9d9d9', borderRadius: 6,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        cursor: 'pointer', background: '#fff', flexShrink: 0, overflow: 'hidden',
-                      }}
-                    >
-                      {matrixThumbnailPreview ? (
-                        <img src={matrixThumbnailPreview} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      ) : (
-                        <UploadOutlined style={{ fontSize: 16, color: '#999' }} />
-                      )}
-                    </div>
-                    <input
-                      ref={fileInputRefMatrix}
-                      type="file"
-                      accept="image/*"
-                      style={{ display: 'none' }}
-                      onChange={e => { const f = e.target.files?.[0]; if (f) handleMatrixThumbnailFile(f); e.target.value = '' }}
-                    />
-                    <Input
-                      placeholder="Hoặc URL..."
-                      value={matrixThumbnail}
-                      onChange={e => { setMatrixThumbnail(e.target.value); setMatrixThumbnailFile(null) }}
-                      style={{ width: 160 }}
-                    />
-                  </div>
-                </div>
-                <Button type="primary" onClick={generateFromMatrix} disabled={!Object.values(matrixSelections).some(Boolean)}>
-                  Tạo {Object.values(matrixSelections).filter(Boolean).length} biến thể
-                </Button>
-              </div>
-            </div>
-          )}
 
           <div style={{ marginBottom: 16, padding: 12, background: '#fafafa', borderRadius: 6, border: '1px solid #f0f0f0' }}>
             <Text strong style={{ fontSize: 13, display: 'block', marginBottom: 8 }}>Thêm biến thể theo phiên bản</Text>
@@ -518,37 +358,34 @@ function CreateProduct() {
                   ))}
                 </div>
                 <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-                  <div>
+                    <div>
                     <Text style={{ fontSize: 12, display: 'block', marginBottom: 2 }}>Giá</Text>
                     <InputNumber
-                      placeholder="0"
                       min={0}
                       value={v.price}
                       onChange={val => updateVariant(v.tempId, 'price', val || 0)}
-                      addonBefore="₫"
-                      style={{ width: 150 }}
+                      addonAfter="₫"
+                      style={{ width: 180 }}
                     />
                   </div>
                   <div>
                     <Text style={{ fontSize: 12, display: 'block', marginBottom: 2 }}>Giảm giá</Text>
                     <InputNumber
-                      placeholder="0"
                       min={0}
                       max={100}
                       value={v.discountPercentage}
                       onChange={val => updateVariant(v.tempId, 'discountPercentage', val || 0)}
                       addonAfter="%"
-                      style={{ width: 120 }}
+                      style={{ width: 150 }}
                     />
                   </div>
                   <div>
                     <Text style={{ fontSize: 12, display: 'block', marginBottom: 2 }}>Tồn kho</Text>
                     <InputNumber
-                      placeholder="0"
                       min={0}
                       value={v.stock}
                       onChange={val => updateVariant(v.tempId, 'stock', val || 0)}
-                      style={{ width: 120 }}
+                      style={{ width: 150 }}
                     />
                   </div>
                   <div>

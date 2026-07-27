@@ -2,8 +2,10 @@ import { create } from 'zustand'
 import axios from 'axios'
 import { BASE_URL } from '../api/endpoints'
 import { removeAdminTokens } from '../utils/token'
+import axiosAdminAuth from '../api/axiosAdminAuth'
+import API from '../api/endpoints'
 
-const useAdminAuthStore = create((set) => ({
+const useAdminAuthStore = create((set, get) => ({
   user: null,
   accessToken: null,
   isAuthenticated: false,
@@ -19,6 +21,19 @@ const useAdminAuthStore = create((set) => ({
       })
     } catch {
       set({ isInitialized: true })
+    }
+  },
+
+  fetchUser: async () => {
+    try {
+      const res = await axiosAdminAuth.get(API.adminMyAccount)
+      if (res.data.data?.user) {
+        const userData = res.data.data.user
+        userData.role = res.data.data.role
+        set({ user: userData })
+      }
+    } catch {
+      // ignore
     }
   },
 

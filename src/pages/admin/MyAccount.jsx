@@ -40,6 +40,9 @@ function MyAccount() {
             <Descriptions.Item label="Họ tên" span={2}>{user.fullName}</Descriptions.Item>
             <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
             <Descriptions.Item label="Số điện thoại">{user.phone || '—'}</Descriptions.Item>
+            <Descriptions.Item label="Vai trò">
+              <Tag color="blue">{user.role?.title || '—'}</Tag>
+            </Descriptions.Item>
             <Descriptions.Item label="Trạng thái">
               <Tag color={user.status === 'active' ? 'green' : 'red'}>
                 {user.status === 'active' ? 'Hoạt động' : 'Dừng hoạt động'}

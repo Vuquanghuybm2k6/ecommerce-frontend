@@ -67,10 +67,12 @@ function AdminProductList() {
     },
     {
       title: 'Hình ảnh',
-      dataIndex: 'thumbnail',
       key: 'thumbnail',
       width: 80,
-      render: (src) => src ? <Image src={src} width={50} height={50} style={{ objectFit: 'cover' }} /> : null,
+      render: (_, record) => {
+        const src = record.variants?.[0]?.thumbnail
+        return src ? <Image src={src} width={50} height={50} style={{ objectFit: 'cover' }} /> : null
+      },
     },
     {
       title: 'Tiêu đề',
@@ -80,17 +82,19 @@ function AdminProductList() {
     },
     {
       title: 'Giá',
-      dataIndex: 'price',
       key: 'price',
       sorter: true,
-      render: (val) => val?.toLocaleString() + 'đ',
+      render: (_, record) => {
+        const price = record.variants?.[0]?.price
+        return price ? price.toLocaleString() + 'đ' : '0đ'
+      },
     },
     {
       title: 'Kho',
-      dataIndex: 'stock',
       key: 'stock',
       width: 80,
       sorter: true,
+      render: (_, record) => record.variants?.[0]?.stock ?? 0,
     },
     {
       title: 'Trạng thái',

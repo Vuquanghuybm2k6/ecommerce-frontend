@@ -54,7 +54,7 @@ function AdminReviewList() {
       width: 200,
       render: (_, record) => (
         <div>
-          <Text strong>{record.product?.title || '—'}</Text>
+          <Text strong>{record.product?.title || record.product_title || '—'}</Text>
         </div>
       ),
     },

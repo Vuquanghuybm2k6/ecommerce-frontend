@@ -1,10 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { Layout, Menu, Avatar, Dropdown, Space, Typography } from 'antd'
 import {
   DashboardOutlined,
   ShoppingOutlined,
-  AppstoreOutlined,
   OrderedListOutlined,
   TeamOutlined,
   UserOutlined,
@@ -19,73 +18,98 @@ import './AdminLayout.css'
 const { Header, Sider, Content } = Layout
 const { Text } = Typography
 
-const menuItems = [
-  { key: '/admin', icon: <DashboardOutlined />, label: <Link to="/admin">Dashboard</Link> },
-  {
-    key: 'products',
-    icon: <ShoppingOutlined />,
-    label: 'Sản phẩm',
-    children: [
-      { key: '/admin/products', label: <Link to="/admin/products">Danh sách</Link> },
-      { key: '/admin/products/create', label: <Link to="/admin/products/create">Thêm mới</Link> },
-    ],
-  },
-  {
-    key: 'categories',
-    icon: <AppstoreOutlined />,
-    label: 'Danh mục',
-    children: [
-      { key: '/admin/products-category', label: <Link to="/admin/products-category">Danh sách</Link> },
-      { key: '/admin/products-category/create', label: <Link to="/admin/products-category/create">Thêm mới</Link> },
-    ],
-  },
-  {
-    key: 'orders',
-    icon: <OrderedListOutlined />,
-    label: 'Đơn hàng',
-    children: [
-      { key: '/admin/orders', label: <Link to="/admin/orders">Danh sách</Link> },
-    ],
-  },
-  {
-    key: 'reviews',
-    icon: <StarOutlined />,
-    label: 'Đánh giá',
-    children: [
-      { key: '/admin/reviews', label: <Link to="/admin/reviews">Danh sách</Link> },
-    ],
-  },
-  {
-    key: 'roles',
-    icon: <SafetyOutlined />,
-    label: 'Nhóm quyền',
-    children: [
-      { key: '/admin/roles', label: <Link to="/admin/roles">Danh sách</Link> },
-      { key: '/admin/roles/create', label: <Link to="/admin/roles/create">Thêm mới</Link> },
-      { key: '/admin/roles/permissions', label: <Link to="/admin/roles/permissions">Phân quyền</Link> },
-    ],
-  },
-  {
-    key: 'accounts',
-    icon: <TeamOutlined />,
-    label: 'Tài khoản',
-    children: [
-      { key: '/admin/accounts', label: <Link to="/admin/accounts">Danh sách</Link> },
-      { key: '/admin/accounts/create', label: <Link to="/admin/accounts/create">Thêm mới</Link> },
-    ],
-  },
-  { key: '/admin/my-account', icon: <UserOutlined />, label: <Link to="/admin/my-account">Tài khoản của tôi</Link> },
-  { key: '/admin/settings/general', icon: <SettingOutlined />, label: <Link to="/admin/settings/general">Cài đặt</Link> },
-]
-
 function AdminLayout() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { user, isAuthenticated, isInitialized, initialize, logout } = useAdminAuthStore()
+  const { user, isAuthenticated, isInitialized, initialize, fetchUser, logout } = useAdminAuthStore()
+  const permissions = user?.role?.permissions || []
+  const isSuperAdmin = user?.role?.title === 'Super Admin'
+  const isLoading = isInitialized && !user
+
+  const hasPermission = (key) => {
+    if (isSuperAdmin) return true
+    return permissions.includes(key)
+  }
+
+  const shouldShowItem = (item) => {
+    if (item.key === '/admin' || item.key === '/admin/my-account') return true
+    if (item.children) {
+      const perms = {
+        products: ['products_view', 'category_view'],
+        orders: ['orders_view'],
+        reviews: ['reviews_view'],
+        roles: ['roles_view', 'roles_permissions'],
+        accounts: ['accounts_view'],
+      }
+      return perms[item.key]?.some(hasPermission) ?? true
+    }
+    if (item.key === '/admin/settings/general') return hasPermission('settings_view')
+    return true
+  }
+
+  const menuItems = useMemo(() => {
+    const allItems = [
+      { key: '/admin', icon: <DashboardOutlined />, label: <Link to="/admin">Dashboard</Link> },
+      {
+        key: 'products',
+        icon: <ShoppingOutlined />,
+        label: 'Sản phẩm',
+        children: [
+          { key: '/admin/products', label: <Link to="/admin/products">Sản phẩm</Link> },
+          { key: '/admin/products-category', label: <Link to="/admin/products-category">Danh mục</Link> },
+        ],
+      },
+      {
+        key: 'orders',
+        icon: <OrderedListOutlined />,
+        label: 'Đơn hàng',
+        children: [
+          { key: '/admin/orders', label: <Link to="/admin/orders">Danh sách</Link> },
+        ],
+      },
+      {
+        key: 'reviews',
+        icon: <StarOutlined />,
+        label: 'Đánh giá',
+        children: [
+          { key: '/admin/reviews', label: <Link to="/admin/reviews">Danh sách</Link> },
+        ],
+      },
+      {
+        key: 'roles',
+        icon: <SafetyOutlined />,
+        label: 'Nhóm quyền',
+        children: [
+          { key: '/admin/roles', label: <Link to="/admin/roles">Danh sách</Link> },
+          { key: '/admin/roles/create', label: <Link to="/admin/roles/create">Thêm mới</Link> },
+          { key: '/admin/roles/permissions', label: <Link to="/admin/roles/permissions">Phân quyền</Link> },
+        ],
+      },
+      {
+        key: 'accounts',
+        icon: <TeamOutlined />,
+        label: 'Tài khoản',
+        children: [
+          { key: '/admin/accounts', label: <Link to="/admin/accounts">Danh sách</Link> },
+          { key: '/admin/accounts/create', label: <Link to="/admin/accounts/create">Thêm mới</Link> },
+        ],
+      },
+      { key: '/admin/my-account', icon: <UserOutlined />, label: <Link to="/admin/my-account">Tài khoản của tôi</Link> },
+      { key: '/admin/settings/general', icon: <SettingOutlined />, label: <Link to="/admin/settings/general">Cài đặt</Link> },
+    ]
+
+    return allItems.filter(item => shouldShowItem(item))
+  }, [permissions, isSuperAdmin])
 
   useEffect(() => {
     if (!isInitialized) initialize()
   }, [isInitialized])
+
+  useEffect(() => {
+    if (isInitialized && isAuthenticated && !user) {
+      fetchUser()
+    }
+  }, [isInitialized, isAuthenticated, user])
 
   useEffect(() => {
     if (isInitialized && !isAuthenticated) {
@@ -116,7 +140,7 @@ function AdminLayout() {
           theme="dark"
           mode="inline"
           selectedKeys={[selectedKey]}
-          defaultOpenKeys={['products', 'categories', 'orders', 'reviews', 'roles', 'accounts']}
+          defaultOpenKeys={['products', 'orders', 'reviews', 'roles', 'accounts']}
           items={menuItems}
         />
       </Sider>

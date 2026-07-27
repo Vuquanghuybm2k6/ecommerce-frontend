@@ -14,6 +14,9 @@ function useAdminMyAccount() {
     axiosAdminAuth.get(API.adminMyAccount)
       .then(res => {
         const u = res.data.data?.user || null
+        if (u) {
+          u.role = res.data.data?.role
+        }
         setUser(u)
         setLocalUser(u)
       })
@@ -28,8 +31,12 @@ function useAdminMyAccount() {
       })
       message.success(res.data?.message || 'Cập nhật thành công')
       const { data } = await axiosAdminAuth.get(API.adminMyAccount)
-      setUser(data.data?.user || null)
-      setLocalUser(data.data?.user || null)
+      const u2 = data.data?.user || null
+      if (u2) {
+        u2.role = data.data?.role
+      }
+      setUser(u2)
+      setLocalUser(u2)
     } catch (err) {
       const msg = err.response?.data?.message || 'Cập nhật thất bại'
       message.error(msg)

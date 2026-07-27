@@ -13,9 +13,11 @@ function useAdminAuth() {
 
   const fetchAdminUser = async () => {
     try {
-      const res = await axiosAdminAuth.get(API.adminLogin)
+      const res = await axiosAdminAuth.get(API.adminMyAccount)
       if (res.data.data?.user) {
-        setUser(res.data.data.user)
+        const userData = res.data.data.user
+        userData.role = res.data.data.role
+        setUser(userData)
       }
     } catch {
       // token invalid
