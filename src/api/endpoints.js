@@ -15,6 +15,7 @@ const API = {
   checkout: '/api/checkout',
   checkoutOrder: '/api/checkout/order',
   checkoutSuccess: (id) => `/api/checkout/success/${id}`,
+  checkoutPayAgain: '/api/checkout/pay-again',
   userRegister: '/api/user/register',
   userLogin: '/api/user/login',
   userLogout: '/api/user/logout',

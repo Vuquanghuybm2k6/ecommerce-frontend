@@ -11,8 +11,8 @@ import CategoryProducts from './pages/client/CategoryProducts'
 import SearchPage from './pages/client/SearchPage'
 import CartPage from './pages/client/CartPage'
 import CheckoutPage from './pages/client/CheckoutPage'
-import VnpayReturn from './pages/client/VnpayReturn'
 import OrderSuccess from './pages/client/OrderSuccess'
+import VnpaySuccess from './pages/client/VnpaySuccess'
 import LoginPage from './pages/client/LoginPage'
 import RegisterPage from './pages/client/RegisterPage'
 import LogoutPage from './pages/client/LogoutPage'
@@ -52,16 +52,16 @@ import AdminReviewList from './pages/admin/review/List'
 function App() {
   return (
     <Routes>
-      <Route element={<ClientLayout />}>
-        <Route index element={<HomePage />} />
+      <Route element={<ClientLayout />}> // đóng vai trò layout cha cho các layout con bên trong, các layout con 
+        <Route index element={<HomePage />} /> // nếu url hiện tại là url mặc định của route cha thì se render ra component HomePage
         <Route path="products" element={<ProductList />} />
         <Route path="products/detail/:slug" element={<ProductDetail />} />
         <Route path="products/:slugCategory" element={<CategoryProducts />} />
         <Route path="search" element={<SearchPage />} />
         <Route path="cart" element={<CartPage />} />
         <Route path="checkout" element={<CheckoutPage />} />
-        <Route path="checkout/vnpay-success" element={<VnpayReturn />} />
         <Route path="checkout/success/:orderId" element={<OrderSuccess />} />
+        <Route path="checkout/vnpay-success" element={<VnpaySuccess />} />
         <Route path="user/login" element={<LoginPage />} />
         <Route path="user/register" element={<RegisterPage />} />
         <Route path="user/logout" element={<LogoutPage />} />
@@ -102,7 +102,7 @@ function App() {
         <Route path="reviews" element={<AdminReviewList />} />
       </Route>
 
-      <Route path="*" element={<NotFound />} />
+      <Route path="*" element={<NotFound />} /> // những route không được định nghĩa sẽ render ra component NotFound
     </Routes>
   )
 }

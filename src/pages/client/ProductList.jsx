@@ -10,7 +10,7 @@ import './ProductList.css'
 const { Title } = Typography
 
 function ProductList() {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams() // searchParams để đọc url, còn setSearchParams để sửa url
   const keyword = searchParams.get('keyword') || ''
   const page = parseInt(searchParams.get('page')) || 1
   const sortBy = searchParams.get('sort') || 'position-desc'

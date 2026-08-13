@@ -5,14 +5,14 @@ const { TextArea } = Input
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import useAdminOrderDetail from '../../../hooks/useAdminOrderDetail'
 import { formatCurrency, getDisplayPrice } from '../../../utils/price'
+import { getPaymentMethodLabel, getPaymentStatusLabel } from '../../../utils/payment'
+import { formatDateTime } from '../../../utils/date'
 import './Detail.css'
 
 const { Title, Text } = Typography
 
 const statusColorMap = {
   pending: 'orange',
-  pending_vnpay: 'gold',
-  payment_failed: 'volcano',
   confirmed: 'blue',
   shipped: 'cyan',
   delivered: 'green',
@@ -21,8 +21,6 @@ const statusColorMap = {
 
 const statusLabelMap = {
   pending: 'Chờ xác nhận',
-  pending_vnpay: 'Chờ thanh toán VNPay',
-  payment_failed: 'Thanh toán thất bại',
   confirmed: 'Đã xác nhận',
   shipped: 'Đang giao hàng',
   delivered: 'Đã giao hàng',
@@ -31,8 +29,6 @@ const statusLabelMap = {
 
 const VALID_TRANSITIONS = {
   pending:        ["confirmed", "cancelled"],
-  pending_vnpay:  ["pending", "payment_failed", "cancelled"],
-  payment_failed: ["pending_vnpay", "cancelled"],
   confirmed:      ["shipped", "cancelled"],
   shipped:        ["delivered"],
   delivered:      [],
@@ -148,10 +144,13 @@ function AdminOrderDetail() {
             <Tag color={statusColorMap[order.status]}>{statusLabelMap[order.status]}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="Phương thức thanh toán">
-            {order.paymentMethod === 'COD' ? 'Thanh toán khi nhận hàng (COD)' : order.paymentMethod}
+            {getPaymentMethodLabel(order.paymentMethod)}
+          </Descriptions.Item>
+          <Descriptions.Item label="Trạng thái thanh toán">
+            {getPaymentStatusLabel(order.paymentStatus)}
           </Descriptions.Item>
           <Descriptions.Item label="Ngày đặt">
-            {new Date(order.createdAt).toLocaleDateString('vi-VN')}
+            {formatDateTime(order.createdAt)}
           </Descriptions.Item>
           <Descriptions.Item label="Cập nhật lần cuối">
             {order.updatedAt ? new Date(order.updatedAt).toLocaleString('vi-VN') : '---'}

@@ -1,29 +1,86 @@
-import { useParams, Link } from 'react-router-dom'
-import { Spin, Result, Typography, Descriptions, Table, Tag, Button } from 'antd'
+import { useState } from 'react'
+import { useLocation, Link } from 'react-router-dom'
+import { Spin, Result, Button, Typography, Descriptions, Table, Tag, message } from 'antd'
 import useOrderSuccess from '../../hooks/useOrderSuccess'
+import axiosClientAuth from '../../api/axiosClientAuth'
+import API from '../../api/endpoints'
 import { formatCurrency, getDisplayPrice } from '../../utils/price'
-import { formatDateTime } from '../../utils/date'
-import { getPaymentMethodLabel, getPaymentStatusLabel } from '../../utils/payment'
-import './OrderSuccess.css'
+import './VnpaySuccess.css'
 
 const { Title, Text } = Typography
 
-function OrderSuccess() {
-  const { orderId } = useParams()
+function VnpaySuccess() {
+  const location = useLocation()
+  const params = new URLSearchParams(location.search)
+  const orderId = params.get('orderId') || ''
+  const success = params.get('success') === 'true'
+  const responseCode = params.get('vnp_ResponseCode') || ''
+  const transactionNo = params.get('vnp_TransactionNo') || ''
+
+  const [paying, setPaying] = useState(false)
+
+  const handlePayAgain = async () => {
+    if (!orderId) return
+    setPaying(true)
+    try {
+      const res = await axiosClientAuth.post(API.checkoutPayAgain, { orderId })
+      if (res.data.data.paymentUrl) {
+        window.location.href = res.data.data.paymentUrl
+      }
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Không thể thanh toán lại'
+      message.error(msg)
+    } finally {
+      setPaying(false)
+    }
+  }
+
   const { order, loading, error } = useOrderSuccess(orderId)
 
   if (loading) {
     return <div className="order-loading"><Spin size="large" /></div>
   }
 
-  if (error || !order) {
+  if (!success) {
     return (
       <Result
         status="error"
-        title="Không tìm thấy đơn hàng"
+        title="Thanh toán thất bại"
+        subTitle={
+          responseCode
+            ? `Mã lỗi VNPay: ${responseCode}${order ? ` - Đơn hàng ${order.orderCode}` : ''}`
+            : 'Giao dịch không thành công, vui lòng thử lại'
+        }
         extra={
-          <Link to="/">
-            <Button type="primary">Về trang chủ</Button>
+          <>
+            {orderId && (
+              <Button type="primary" loading={paying} onClick={handlePayAgain}>
+                Thanh toán lại
+              </Button>
+            )}
+            <Link to="/cart">
+              <Button>Quay lại giỏ hàng</Button>
+            </Link>
+            {orderId && (
+              <Link to={`/user/orders/${orderId}`}>
+                <Button>Xem đơn hàng</Button>
+              </Link>
+            )}
+          </>
+        }
+      />
+    )
+  }
+
+  if (error || !order) {
+    return (
+      <Result
+        status="warning"
+        title="Không tìm thấy thông tin đơn hàng"
+        subTitle="Giao dịch có thể đã thành công nhưng chưa đồng bộ, vui lòng kiểm tra lại đơn hàng."
+        extra={
+          <Link to="/user/orders">
+            <Button type="primary">Xem danh sách đơn hàng</Button>
           </Link>
         }
       />
@@ -81,14 +138,14 @@ function OrderSuccess() {
     <div className="order-success-page">
       <Result
         status="success"
-        title="Đặt hàng thành công!"
-        subTitle={`Mã đơn hàng: ${order.orderCode}`}
+        title="Thanh toán thành công!"
+        subTitle={`Đơn hàng ${order.orderCode} đã được thanh toán qua VNPay`}
       />
 
       <div className="order-detail-card">
-        <Title level={4}>Thông tin đơn hàng</Title>
-
+        <Title level={4}>Thông tin thanh toán</Title>
         <Descriptions bordered column={{ xs: 1, sm: 2 }}>
+          <Descriptions.Item label="Mã giao dịch VNPay">{transactionNo || '—'}</Descriptions.Item>
           <Descriptions.Item label="Mã đơn hàng">
             <Text strong>{order.orderCode}</Text>
           </Descriptions.Item>
@@ -97,21 +154,12 @@ function OrderSuccess() {
           </Descriptions.Item>
           <Descriptions.Item label="Người nhận">{order.userInfo?.fullName}</Descriptions.Item>
           <Descriptions.Item label="Số điện thoại">{order.userInfo?.phone}</Descriptions.Item>
-          <Descriptions.Item label="Địa chỉ" span={2}>{order.userInfo?.address}</Descriptions.Item>
-          <Descriptions.Item label="Phương thức thanh toán">
-            {getPaymentMethodLabel(order.paymentMethod)}
-          </Descriptions.Item>
-          <Descriptions.Item label="Trạng thái thanh toán">
-            {getPaymentStatusLabel(order.paymentStatus)}
-          </Descriptions.Item>
-          <Descriptions.Item label="Ngày đặt">
-            {formatDateTime(order.createdAt)}
-          </Descriptions.Item>
+          <Descriptions.Item label="Địa chỉ">{order.userInfo?.address}</Descriptions.Item>
         </Descriptions>
       </div>
 
       <div className="order-detail-card">
-        <Title level={4}>Chi tiết sản phẩm</Title>
+        <Title level={4}>Chi tiết đơn hàng</Title>
         <Table
           dataSource={order.products}
           columns={columns}
@@ -138,9 +186,12 @@ function OrderSuccess() {
         <Link to="/">
           <Button>Tiếp tục mua sắm</Button>
         </Link>
+        <Link to={`/user/orders/${orderId}`}>
+          <Button type="primary">Xem chi tiết đơn hàng</Button>
+        </Link>
       </div>
     </div>
   )
 }
 
-export default OrderSuccess
+export default VnpaySuccess

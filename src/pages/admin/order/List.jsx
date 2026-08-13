@@ -6,13 +6,12 @@ import { SearchOutlined } from '@ant-design/icons'
 import useAdminOrders from '../../../hooks/useAdminOrders'
 import AdminFilterStatus from '../../../components/admin/AdminFilterStatus'
 import { formatCurrency } from '../../../utils/price'
+import { formatDateTime } from '../../../utils/date'
 
 const { Title, Text } = Typography
 
 const statusColorMap = {
   pending: 'orange',
-  pending_vnpay: 'gold',
-  payment_failed: 'volcano',
   confirmed: 'blue',
   shipped: 'cyan',
   delivered: 'green',
@@ -21,8 +20,6 @@ const statusColorMap = {
 
 const statusLabelMap = {
   pending: 'Chờ xác nhận',
-  pending_vnpay: 'Chờ thanh toán VNPay',
-  payment_failed: 'Thanh toán thất bại',
   confirmed: 'Đã xác nhận',
   shipped: 'Đang giao hàng',
   delivered: 'Đã giao hàng',
@@ -31,8 +28,6 @@ const statusLabelMap = {
 
 const VALID_TRANSITIONS = {
   pending:        ["confirmed", "cancelled"],
-  pending_vnpay:  ["pending", "payment_failed", "cancelled"],
-  payment_failed: ["pending_vnpay", "cancelled"],
   confirmed:      ["shipped", "cancelled"],
   shipped:        ["delivered"],
   delivered:      [],
@@ -126,7 +121,7 @@ function AdminOrderList() {
       dataIndex: 'createdAt',
       key: 'createdAt',
       sorter: true,
-      render: (val) => val ? new Date(val).toLocaleDateString('vi-VN') : '---',
+      render: (val) => val ? formatDateTime(val) : '---',
     },
     {
       title: 'Trạng thái',

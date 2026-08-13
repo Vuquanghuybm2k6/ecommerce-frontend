@@ -33,7 +33,18 @@ function useOrderDetail(orderId) {
     }
   }
 
-  return { order, loading, error, cancelOrder, refetch: fetchOrder }
+  const payAgain = async () => {
+    try {
+      const res = await axiosClientAuth.post(API.checkoutPayAgain, { orderId })
+      return res.data.data.paymentUrl
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Không thể thanh toán lại'
+      message.error(msg)
+      throw new Error(msg)
+    }
+  }
+
+  return { order, loading, error, cancelOrder, payAgain, refetch: fetchOrder }
 }
 
 export default useOrderDetail

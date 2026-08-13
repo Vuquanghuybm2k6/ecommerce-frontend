@@ -15,7 +15,7 @@ const { TextArea } = Input
 
 function CheckoutPage() {
   const navigate = useNavigate()
-  const [form] = Form.useForm()
+  const [form] = Form.useForm() // tạo form bằng ant design để quản lí form
   const { cartDetail, loading, error } = useCheckout()
   const { placeOrder, placing, error: placeError } = usePlaceOrder()
   const { isAuthenticated } = useAuthStore()
@@ -23,7 +23,7 @@ function CheckoutPage() {
   const hasCartId = !!getCartId()
 
   const items = cartDetail?.products || []
-  const isEmpty = !hasCartId || items.length === 0
+  const isEmpty = !hasCartId || items.length === 0 // ktra xem giỏ hàng có trống hay không, nếu trống thì hiển thị thông báo
 
   useEffect(() => {
     if (placeError && submitted) {
@@ -38,10 +38,13 @@ function CheckoutPage() {
       navigate(`/user/login?redirect=${redirect}`)
       return
     }
-    setSubmitted(true)
+    setSubmitted(true) // khi người dùng bấm đặt hàng thì set submitted = true để tránh bấm nhiều lần
     try {
       const result = await placeOrder(values)
-      if (result?.paymentUrl) return
+      if (result.paymentUrl) {
+        window.location.href = result.paymentUrl
+        return
+      }
       navigate(`/checkout/success/${result.orderId}`)
     } catch {
       setSubmitted(false)
@@ -130,9 +133,9 @@ function CheckoutPage() {
             </Form.Item>
 
             <Form.Item name="paymentMethod" label="Phương thức thanh toán">
-              <Select size="large" defaultValue="COD">
-                <Select.Option value="COD">Thanh toán khi nhận hàng (COD)</Select.Option>
-                <Select.Option value="vnpay">VNPay (Thanh toán online)</Select.Option>
+              <Select size="large" defaultValue="cod">
+                <Select.Option value="cod">Thanh toán khi nhận hàng (COD)</Select.Option>
+                <Select.Option value="vnpay">Thanh toán qua cổng VNPay</Select.Option>
               </Select>
             </Form.Item>
 

@@ -6,14 +6,13 @@ import useOrderList from '../../hooks/useOrderList'
 import axiosClientAuth from '../../api/axiosClientAuth'
 import API from '../../api/endpoints'
 import { formatCurrency } from '../../utils/price'
+import { formatDateTime } from '../../utils/date'
 import './OrderList.css'
 
 const { Title, Text } = Typography
 
 const statusColorMap = {
   pending: 'orange',
-  pending_vnpay: 'gold',
-  payment_failed: 'volcano',
   confirmed: 'blue',
   shipped: 'cyan',
   delivered: 'green',
@@ -22,8 +21,6 @@ const statusColorMap = {
 
 const statusLabelMap = {
   pending: 'Chờ xác nhận',
-  pending_vnpay: 'Chờ thanh toán VNPay',
-  payment_failed: 'Thanh toán thất bại',
   confirmed: 'Đã xác nhận',
   shipped: 'Đang giao hàng',
   delivered: 'Đã giao hàng',
@@ -73,7 +70,7 @@ function OrderList() {
       title: 'Ngày đặt',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (val) => new Date(val).toLocaleDateString('vi-VN'),
+      render: (val) => formatDateTime(val),
     },
     {
       title: 'Số lượng',

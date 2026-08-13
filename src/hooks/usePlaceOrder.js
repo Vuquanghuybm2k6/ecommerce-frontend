@@ -18,12 +18,7 @@ function usePlaceOrder() {
 
       resetCart()
 
-      if (paymentUrl) {
-        window.location.href = paymentUrl
-        return { orderId, orderCode, paymentUrl }
-      }
-
-      return { orderId, orderCode }
+      return { orderId, orderCode, paymentUrl }
     } catch (err) {
       const msg = err.response?.data?.message || 'Đặt hàng thất bại'
       setError(msg)

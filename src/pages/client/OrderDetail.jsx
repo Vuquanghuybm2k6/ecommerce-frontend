@@ -5,6 +5,8 @@ import { ArrowLeftOutlined, StarOutlined } from '@ant-design/icons'
 import useOrderDetail from '../../hooks/useOrderDetail'
 import useAuthStore from '../../store/authStore'
 import { formatCurrency, getDisplayPrice } from '../../utils/price'
+import { formatDateTime } from '../../utils/date'
+import { getPaymentMethodLabel, getPaymentStatusLabel } from '../../utils/payment'
 import ReviewForm from '../../components/client/ReviewForm'
 import './OrderSuccess.css'
 
@@ -12,8 +14,6 @@ const { Title, Text } = Typography
 
 const statusColorMap = {
   pending: 'orange',
-  pending_vnpay: 'gold',
-  payment_failed: 'volcano',
   confirmed: 'blue',
   shipped: 'cyan',
   delivered: 'green',
@@ -22,8 +22,6 @@ const statusColorMap = {
 
 const statusLabelMap = {
   pending: 'Chờ xác nhận',
-  pending_vnpay: 'Chờ thanh toán VNPay',
-  payment_failed: 'Thanh toán thất bại',
   confirmed: 'Đã xác nhận',
   shipped: 'Đang giao hàng',
   delivered: 'Đã giao hàng',
@@ -32,8 +30,6 @@ const statusLabelMap = {
 
 const stepMap = {
   pending: 0,
-  pending_vnpay: 0,
-  payment_failed: 0,
   confirmed: 1,
   shipped: 2,
   delivered: 3,
@@ -42,9 +38,10 @@ const stepMap = {
 
 function OrderDetail() {
   const { orderId } = useParams()
-  const { order, loading, error, cancelOrder } = useOrderDetail(orderId)
+  const { order, loading, error, cancelOrder, payAgain } = useOrderDetail(orderId)
   const { isAuthenticated } = useAuthStore()
   const [cancelling, setCancelling] = useState(false)
+  const [paying, setPaying] = useState(false)
   const [reviewProduct, setReviewProduct] = useState(null)
 
   if (loading) {
@@ -63,6 +60,25 @@ function OrderDetail() {
         }
       />
     )
+  }
+
+  const PAY_AGAIN_WINDOW_MS = 24 * 60 * 60 * 1000
+  const isUnpaidVnpay =
+    order.paymentMethod === 'vnpay' && order.status === 'pending' &&
+    (order.paymentStatus === 'pending' || order.paymentStatus === 'failed')
+  const canPayAgain = isUnpaidVnpay && Date.now() - new Date(order.createdAt).getTime() <= PAY_AGAIN_WINDOW_MS
+  const payAgainExpired = isUnpaidVnpay && !canPayAgain
+
+  const handlePayAgain = async () => {
+    setPaying(true)
+    try {
+      const url = await payAgain()
+      if (url) window.location.href = url
+    } catch {
+      /* message đã hiển thị trong hook */
+    } finally {
+      setPaying(false)
+    }
   }
 
   const columns = [
@@ -139,10 +155,13 @@ function OrderDetail() {
           <Descriptions.Item label="Số điện thoại">{order.userInfo?.phone}</Descriptions.Item>
           <Descriptions.Item label="Địa chỉ" span={2}>{order.userInfo?.address}</Descriptions.Item>
           <Descriptions.Item label="Phương thức thanh toán">
-            {order.paymentMethod === 'COD' ? 'Thanh toán khi nhận hàng (COD)' : order.paymentMethod}
+            {getPaymentMethodLabel(order.paymentMethod)}
+          </Descriptions.Item>
+          <Descriptions.Item label="Trạng thái thanh toán">
+            {getPaymentStatusLabel(order.paymentStatus)}
           </Descriptions.Item>
           <Descriptions.Item label="Ngày đặt">
-            {new Date(order.createdAt).toLocaleDateString('vi-VN')}
+            {formatDateTime(order.createdAt)}
           </Descriptions.Item>
         </Descriptions>
       </div>
@@ -186,6 +205,14 @@ function OrderDetail() {
       </div>
 
       <div className="order-actions">
+        {canPayAgain && (
+          <Button type="primary" loading={paying} onClick={handlePayAgain}>
+            Thanh toán lại
+          </Button>
+        )}
+        {payAgainExpired && (
+          <Tag color="red">Hết hạn thanh toán</Tag>
+        )}
         {order.status === 'pending' && (
           <Button
             danger
