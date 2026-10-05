@@ -1,0 +1,14 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        # Nếu dùng domain có SSL: đặt là URL backend hoặc để rỗng nếu dùng reverse proxy chung domain
+        # Nếu test bằng IP VPS: VITE_API_URL=http://<IP_VPS>:3000
+        - VITE_API_URL=${VITE_API_URL:-https://ecommerce.khaifrost.com}
+    container_name: pmp-frontend
+    ports:
+      # Map cổng 5173 của VPS vào cổng 80 của Nginx container (giữ nguyên cổng 5173 bạn đã mở trên VPS)
+      - "5173:80"
+    restart: always
